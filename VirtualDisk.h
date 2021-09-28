@@ -33,7 +33,6 @@ private:
 
     uint curRecordID;
 
-
 public:
     VirtualDisk(uint diskSize, uint blockSize, float blkHeaderRatio);
 
@@ -42,7 +41,7 @@ public:
 
     bool deleteRecord(tuple<uint, void *, uint_s> recordDirectory);
 
-    vector<string> fetchRecord(tuple<uint, void *, uint_s> recordDirectory);
+    vector<tuple<uchar, string>> fetchRecord(tuple<uint, void *, uint_s> recordDirectory);
 
     void reportStats();
 
@@ -53,17 +52,33 @@ private:
 
     bool deallocBlk(int blkOffset);
 
+    uchar *readBlock(uchar *pBlk);
+
+    void writeBlock(uchar *pBlk, uchar *block);
+
     void intToBytes(uint integer, uchar *bytes);
 
     void fixedStringToBytes(string s, uint length, uchar *bytes);
 
     void floatToBytes(float f, uchar *bytes);
 
+    float bytesToFloat(uchar *bytes);
+
+    int bytesToInt(uchar *bytes, size_t numBytes);
+
+    string bytesToFixedString(uchar *bytes, size_t numBytes);
+
     void packToField(string data, uchar fieldID, uchar type, size_t dataSize, uchar *field);
 
     uint packToRecord(vector<uchar *> fields, uchar numFields, uchar *record);
 
-    int insertRecordToBlock(uchar *targetBlock, size_t blockSize, uchar *targetRecord, int recordSize);
+    int insertRecordToBlock(uchar *targetBlock, uchar *targetRecord, int recordSize);
+
+    vector<tuple<uchar, uchar, size_t, uchar *>> fetchRecordFromBlock(uchar *targetBlock, uint recordNum);
+
+    bool removeRecordFromBlock(uchar *targetBlock, uint recordNum);
+
+    vector<tuple<uchar, string>> decodeRecord(vector<tuple<uchar, uchar, size_t, uchar *>> recordSet);
 
     void printHex(uchar *target, size_t size, string label);
 
