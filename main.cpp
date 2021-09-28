@@ -36,7 +36,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 
 
 int main() {
-    string fileDirectory = "D:\\Projects\\Database\\data\\data_10k.tsv";
+    string fileDirectory = "..\\data\\data_10k.tsv";
 
     // Data Format: uchar fieldID, uchar dataType, size_t dataSize
     vector<tuple<uchar, uchar, size_t>> dataFormat;
