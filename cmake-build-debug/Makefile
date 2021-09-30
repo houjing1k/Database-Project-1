@@ -128,6 +128,30 @@ Database/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/build
 .PHONY : Database/fast
 
+BPTree.obj: BPTree.cpp.obj
+.PHONY : BPTree.obj
+
+# target to build an object file
+BPTree.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/BPTree.cpp.obj
+.PHONY : BPTree.cpp.obj
+
+BPTree.i: BPTree.cpp.i
+.PHONY : BPTree.i
+
+# target to preprocess a source file
+BPTree.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/BPTree.cpp.i
+.PHONY : BPTree.cpp.i
+
+BPTree.s: BPTree.cpp.s
+.PHONY : BPTree.s
+
+# target to generate assembly for a file
+BPTree.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/BPTree.cpp.s
+.PHONY : BPTree.cpp.s
+
 VirtualDisk.obj: VirtualDisk.cpp.obj
 .PHONY : VirtualDisk.obj
 
@@ -151,6 +175,30 @@ VirtualDisk.s: VirtualDisk.cpp.s
 VirtualDisk.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/VirtualDisk.cpp.s
 .PHONY : VirtualDisk.cpp.s
+
+data/Node.obj: data/Node.cpp.obj
+.PHONY : data/Node.obj
+
+# target to build an object file
+data/Node.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/data/Node.cpp.obj
+.PHONY : data/Node.cpp.obj
+
+data/Node.i: data/Node.cpp.i
+.PHONY : data/Node.i
+
+# target to preprocess a source file
+data/Node.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/data/Node.cpp.i
+.PHONY : data/Node.cpp.i
+
+data/Node.s: data/Node.cpp.s
+.PHONY : data/Node.s
+
+# target to generate assembly for a file
+data/Node.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/data/Node.cpp.s
+.PHONY : data/Node.cpp.s
 
 main.obj: main.cpp.obj
 .PHONY : main.obj
@@ -209,9 +257,15 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Database
+	@echo ... BPTree.obj
+	@echo ... BPTree.i
+	@echo ... BPTree.s
 	@echo ... VirtualDisk.obj
 	@echo ... VirtualDisk.i
 	@echo ... VirtualDisk.s
+	@echo ... data/Node.obj
+	@echo ... data/Node.i
+	@echo ... data/Node.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

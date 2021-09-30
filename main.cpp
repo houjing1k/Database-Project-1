@@ -13,6 +13,7 @@
 #include "VirtualDisk.h"
 
 
+
 using namespace std;
 using namespace boost::algorithm;
 
@@ -36,7 +37,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 
 
 int main() {
-    string fileDirectory = "..\\data\\data_10.tsv";
+    string fileDirectory = "..\\data\\data_100k.tsv";
 
     // Data Format: uchar fieldID, uchar dataType, size_t dataSize
     vector<tuple<uchar, uchar, size_t>> dataFormat;
@@ -49,6 +50,7 @@ int main() {
 
     // Create virtual disk of 50MB, block size 100B
     VirtualDisk virtualDisk(50000000, 100, 0.20);
+
 
     cout << "Adding " << rawData.size() << " records to database..." << endl;
     bool success = true;

@@ -82,10 +82,22 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="D:/Projects/Database/BPTree.cpp">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="D:/Projects/Database/BPTree.h">
+			<Option target="Database"/>
+		</Unit>
 		<Unit filename="D:/Projects/Database/VirtualDisk.cpp">
 			<Option target="Database"/>
 		</Unit>
 		<Unit filename="D:/Projects/Database/VirtualDisk.h">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="D:/Projects/Database/data/Node.cpp">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="D:/Projects/Database/data/Node.h">
 			<Option target="Database"/>
 		</Unit>
 		<Unit filename="D:/Projects/Database/main.cpp">
