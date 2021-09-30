@@ -17,7 +17,12 @@ const bool DEBUG_MODE = false;
 
 using namespace std;
 
-// Constructor Method
+/**
+ * VirtualDisk Constructor
+ * @param diskSize Size of VirtualDisk (B)
+ * @param blkSize Size of each block in the VirtualDisk (B)
+ * @param blkHeaderRatio Ratio of block header size to total block size (between 0 and 1)
+ */
 VirtualDisk::VirtualDisk(uint diskSize, uint blkSize, float blkHeaderRatio) {
     this->blkSize = blkSize;
     this->diskSize = diskSize;
@@ -39,6 +44,12 @@ VirtualDisk::VirtualDisk(uint diskSize, uint blkSize, float blkHeaderRatio) {
     }
 }
 
+/**
+ * Allocate a New Block
+ * If memory is not full, allocate a new block by setting its block validity and
+ * initialising the block with block header. Also updates the number of allocated and free blocks.
+ * @return allocated block offset number
+ */
 int VirtualDisk::allocBlk() {
     if (numFreeBlk < 1) {
         cout << "Block Allocation Failed: Memory Full" << endl;
@@ -83,6 +94,12 @@ int VirtualDisk::allocBlk() {
     }
 }
 
+/**
+ * De-allocates an empty block
+ * If block is valid, de-allocates block by resetting its block validity.
+ * Also updates the number of allocated and free blocks.
+ * @return status of block de-allocation
+ */
 bool VirtualDisk::deallocBlk(int blkOffset) {
     if (numAllocBlk < 1) {
         if (DEBUG_MODE) cout << "Block De-allocation Failed: No Allocated Blocks" << endl;
@@ -99,6 +116,10 @@ bool VirtualDisk::deallocBlk(int blkOffset) {
     }
 }
 
+/**
+ * Write to a Block in the VirtualDisk.
+ * Simulates the action of writing a single block to a physical disk
+ */
 void VirtualDisk::writeBlock(uchar *pBlk, uchar *blockCpy) {
     uint freeSpace = (blockCpy[1] << 8) | blockCpy[2];
     if (DEBUG_MODE) cout << "Free space: " << freeSpace << endl;
@@ -108,13 +129,26 @@ void VirtualDisk::writeBlock(uchar *pBlk, uchar *blockCpy) {
     } else memcpy(pBlk, blockCpy, blkSize);
 }
 
+/**
+ * Read a Block in the VirtualDisk.
+ * Simulates the action of reading a single block from a physical disk
+ */
 uchar *VirtualDisk::readBlock(uchar *pBlk) {
     uchar *blockCpy = (uchar *) calloc(blkSize, 1);
     memcpy(blockCpy, pBlk, blkSize);
     return blockCpy;
 }
 
-
+/**
+ * Public function to add a record to the VirtualDisk
+ * If block is valid, de-allocates block by resetting its block validity.
+ * Also updates the number of allocated and free blocks.
+ * @param dataFormat format of the record, represented by a set of fields, represented by a tuple containing
+ * <fieldID, fieldType, fieldSize>.
+ * @param data set of strings representing the respective field data
+ * @return status of block de-allocation
+ */
+// Add record to database. Returns a tuple <recordID, pBlk, recordNum>.
 tuple<uint, void *, uint_s>
 VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<string> data) {
     if (DEBUG_MODE) cout << "Add Record" << endl;
@@ -197,6 +231,11 @@ VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<st
     }
 }
 
+/**
+ * Public function to delete a specified record from the VirtualDisk
+ * @param recordDirectory target record to delete. Tuple contains <recordID, pBlk, recordNum>.
+ * @return status of record deletion
+ */
 bool VirtualDisk::deleteRecord(tuple<uint, void *, uint_s> recordDirectory) {
     if (DEBUG_MODE) cout << "Delete Record" << endl;
     uint recordID = get<0>(recordDirectory);
@@ -214,6 +253,11 @@ bool VirtualDisk::deleteRecord(tuple<uint, void *, uint_s> recordDirectory) {
     } else return false;
 }
 
+/**
+ * Public function to fetch a specified record from the VirtualDisk
+ * @param recordDirectory target record to fetch. Tuple contains <recordID, pBlk, recordNum>.
+ * @return data of fetched record in the format of <vector<tuple<uchar fieldID, string fieldData>>.
+ */
 vector<tuple<uchar, string>> VirtualDisk::fetchRecord(tuple<uint, void *, uint_s> recordDirectory) {
     if (DEBUG_MODE) cout << "Fetch Record" << endl;
     uint recordID = get<0>(recordDirectory);
@@ -229,6 +273,12 @@ vector<tuple<uchar, string>> VirtualDisk::fetchRecord(tuple<uint, void *, uint_s
     return data;
 }
 
+/**
+ * Function to decode a byte-encoded record set
+ * @param recordSet target record to decode. Set of fields represented by tuples containing
+ * <fieldID, dataType, dataSize, data>.
+ * @return decoded record data, containing a set of fields which includes the respective fieldID and decoded fieldData.
+ */
 vector<tuple<uchar, string>> VirtualDisk::decodeRecord(vector<tuple<uchar, uchar, size_t, uchar *>> recordSet) {
     vector<tuple<uchar, string>> decodedRecord;
     for (int i = 0; i < recordSet.size(); i++) {
@@ -254,6 +304,11 @@ vector<tuple<uchar, string>> VirtualDisk::decodeRecord(vector<tuple<uchar, uchar
     return decodedRecord;
 }
 
+/**
+ * Encode an integer into a byte array
+ * @param integer integer to encode
+ * @param *bytes pointer of save location of encoded byte array
+ */
 void VirtualDisk::intToBytes(uint integer, uchar *bytes) {
     int numBytes = sizeof(integer);
     for (int i = 0; i < numBytes; i++) {
@@ -261,21 +316,42 @@ void VirtualDisk::intToBytes(uint integer, uchar *bytes) {
     }
 }
 
+/**
+ * Encode a fix-sized string into a byte array
+ * @param s string to encode
+ * @param length length of fix-sized string
+ * @param *bytes pointer of save location of encoded byte array
+ */
 void VirtualDisk::fixedStringToBytes(string s, uint length, uchar *bytes) {
     for (int i = 0; i < length; i++) {
         bytes[i] = s[i];
     }
 }
 
-
+/**
+ * Encode a float (range from 0.0-10.0) into a byte array
+ * Converts it into a range of 0-100 by multiplication of 10 to enable storing as an integer within 1 byte.
+ * @param f float to encode
+ * @param *bytes pointer of save location of encoded byte array
+ */
 void VirtualDisk::floatToBytes(float f, uchar *bytes) {
     *bytes = (unsigned int) (f * 10);
 }
 
+/**
+ * Decode into float (range from 0.0-10.0) from a byte array
+ * @param *bytes byte array to decode
+ * @return decoded float
+ */
 float VirtualDisk::bytesToFloat(uchar *bytes) {
     return (float) ((unsigned int) *bytes) / 10.0;
 }
 
+/**
+ * Decode into integer from a byte array
+ * @param *bytes byte array to decode
+ * @return decoded integer
+ */
 int VirtualDisk::bytesToInt(uchar *bytes, size_t numBytes) {
     int integer = 0;
     for (int i = 0; i < numBytes; i++) {
@@ -284,6 +360,12 @@ int VirtualDisk::bytesToInt(uchar *bytes, size_t numBytes) {
     return integer;
 }
 
+/**
+ * Decode into fix-sized string from a byte array
+ * @param *bytes byte array to decode
+ * @param numBytes length of byte array
+ * @return decoded string
+ */
 string VirtualDisk::bytesToFixedString(uchar *bytes, size_t numBytes) {
     string s = "";
     for (int i = 0; i < numBytes; i++) {
@@ -292,6 +374,14 @@ string VirtualDisk::bytesToFixedString(uchar *bytes, size_t numBytes) {
     return s;
 }
 
+/**
+ * Packs field elements including field header into a representative byte array
+ * @param fieldID field ID
+ * @param type field type
+ * @param dataSize field data size
+ * @param data field data
+ * @param *field target location to save packed field
+ */
 void VirtualDisk::packToField(string data, uchar fieldID, uchar type, size_t dataSize, uchar *field) {
     field[0] = fieldID;
     field[1] = type;
@@ -315,7 +405,12 @@ void VirtualDisk::packToField(string data, uchar fieldID, uchar type, size_t dat
     }
 }
 
-
+/**
+ * Packs a set of packed field into a record with record header
+ * @param fields a set of packed fields
+ * @param numFields number of fields in each record
+ * @param *record target location to save packed record
+ */
 uint VirtualDisk::packToRecord(vector<uchar *> fields, uchar numFields, uchar *record) {
     uint recordSize = 0;
     record[0] = numFields;
@@ -334,6 +429,13 @@ uint VirtualDisk::packToRecord(vector<uchar *> fields, uchar numFields, uchar *r
     return recordSize;
 }
 
+/**
+ * Insert a record into a target block
+ * @param targetBlock target block
+ * @param targetRecord target record to insert
+ * @param recordSize size of target record
+ * @return status of record insertion
+ */
 int VirtualDisk::insertRecordToBlock(uchar *targetBlock, uchar *targetRecord, int recordSize) {
     int recordID = 0;
     int blockHeaderSize = *targetBlock;
@@ -388,6 +490,12 @@ int VirtualDisk::insertRecordToBlock(uchar *targetBlock, uchar *targetRecord, in
     return recordID;
 }
 
+/**
+ * Remove a record from a target block
+ * @param targetBlock target block
+ * @param recordNum record num referring to target record to remove
+ * @return status of record removal
+ */
 bool VirtualDisk::removeRecordFromBlock(uchar *targetBlock, uint recordNum) {
     uchar *pHead = targetBlock + 3 + ((recordNum - 1) * 5);
     uint startOffset = (pHead[1] << 8) | pHead[2];
@@ -410,6 +518,12 @@ bool VirtualDisk::removeRecordFromBlock(uchar *targetBlock, uint recordNum) {
     return true;
 }
 
+/**
+ * Fetch a record from a target block
+ * @param targetBlock target block
+ * @param recordNum record num referring to target record to fetch
+ * @return data of fetched record
+ */
 vector<tuple<uchar, uchar, size_t, uchar *>> VirtualDisk::fetchRecordFromBlock(uchar *targetBlock, uint recordNum) {
     vector<tuple<uchar, uchar, size_t, uchar *>> recordSet;
     uchar *pHead = targetBlock + 3 + ((recordNum - 1) * 5);
@@ -442,6 +556,9 @@ vector<tuple<uchar, uchar, size_t, uchar *>> VirtualDisk::fetchRecordFromBlock(u
     return recordSet;
 }
 
+/**
+ * Function to print memory address range in formatted hex
+ */
 void VirtualDisk::printHex(unsigned char *target, size_t size, string label) {
     if (!DEBUG_MODE) return;
     cout << "Print " << label << " [" << static_cast<void *>(target) << "] :";
@@ -452,6 +569,9 @@ void VirtualDisk::printHex(unsigned char *target, size_t size, string label) {
     cout << endl;
 }
 
+/**
+ * Public function to print statistics of the VirtualDisk
+ */
 void VirtualDisk::reportStats() {
     cout << "------------------- Virtual Disk Stats -------------------" << endl;
     cout << "| Disk Size: \t\t\t" << diskSize << " B (" << diskSize / 1000000 << " MB)" << endl;
@@ -472,7 +592,9 @@ void VirtualDisk::reportStats() {
     cout << "----------------------------------------------------------" << endl;
 }
 
-// Destructor Method
+/**
+ * Destructor Method
+ */
 VirtualDisk::~VirtualDisk() {
     free(pDisk);
 };

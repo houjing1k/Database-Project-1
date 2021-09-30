@@ -10,7 +10,6 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "D:/Projects/Database/BPTree.cpp" "D:/Projects/Database/cmake-build-debug/CMakeFiles/Database.dir/BPTree.cpp.obj"
   "D:/Projects/Database/VirtualDisk.cpp" "D:/Projects/Database/cmake-build-debug/CMakeFiles/Database.dir/VirtualDisk.cpp.obj"
-  "D:/Projects/Database/data/Node.cpp" "D:/Projects/Database/cmake-build-debug/CMakeFiles/Database.dir/data/Node.cpp.obj"
   "D:/Projects/Database/main.cpp" "D:/Projects/Database/cmake-build-debug/CMakeFiles/Database.dir/main.cpp.obj"
   "D:/Projects/Database/try.cpp" "D:/Projects/Database/cmake-build-debug/CMakeFiles/Database.dir/try.cpp.obj"
   )

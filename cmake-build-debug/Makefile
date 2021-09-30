@@ -176,30 +176,6 @@ VirtualDisk.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/VirtualDisk.cpp.s
 .PHONY : VirtualDisk.cpp.s
 
-data/Node.obj: data/Node.cpp.obj
-.PHONY : data/Node.obj
-
-# target to build an object file
-data/Node.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/data/Node.cpp.obj
-.PHONY : data/Node.cpp.obj
-
-data/Node.i: data/Node.cpp.i
-.PHONY : data/Node.i
-
-# target to preprocess a source file
-data/Node.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/data/Node.cpp.i
-.PHONY : data/Node.cpp.i
-
-data/Node.s: data/Node.cpp.s
-.PHONY : data/Node.s
-
-# target to generate assembly for a file
-data/Node.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/data/Node.cpp.s
-.PHONY : data/Node.cpp.s
-
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -263,9 +239,6 @@ help:
 	@echo ... VirtualDisk.obj
 	@echo ... VirtualDisk.i
 	@echo ... VirtualDisk.s
-	@echo ... data/Node.obj
-	@echo ... data/Node.i
-	@echo ... data/Node.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

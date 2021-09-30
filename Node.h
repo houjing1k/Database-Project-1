@@ -19,9 +19,9 @@ public:
     int maxSize;
     Node **childNode; //ptr to next node
 
-    tuple<uint, void *, uint_s> *keyPtr = (tuple<uint, void *, uint_s>*) childNode;
-    childNode[i] =(Node*) keyPtr;
-    friend class BTree;
+//    tuple<uint, void *, uint_s> *keyPtr = (tuple<uint, void *, uint_s>*) childNode;
+//    childNode[i] =(Node*) keyPtr;
+//    friend class BTree;
 
 public:
     Node(int nodeSize)

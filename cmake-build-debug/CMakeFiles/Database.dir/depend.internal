@@ -3,6 +3,8 @@
 
 CMakeFiles/Database.dir/BPTree.cpp.obj
  D:/Projects/Database/BPTree.cpp
+ D:/Projects/Database/BPTree.h
+ D:/Projects/Database/Node.h
 CMakeFiles/Database.dir/VirtualDisk.cpp.obj
  D:/Projects/Database/VirtualDisk.cpp
  D:/Projects/Database/VirtualDisk.h
@@ -532,6 +534,8 @@ CMakeFiles/Database.dir/main.cpp.obj
  C:/MinGW/include/boost/utility/identity_type.hpp
  C:/MinGW/include/boost/utility/result_of.hpp
  C:/MinGW/include/boost/version.hpp
+ D:/Projects/Database/BPTree.h
+ D:/Projects/Database/Node.h
  D:/Projects/Database/VirtualDisk.h
  D:/Projects/Database/main.cpp
 CMakeFiles/Database.dir/try.cpp.obj

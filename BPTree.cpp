@@ -6,6 +6,7 @@
 #include "BPTree.h"
 #include "Node.h"
 #include <tuple>
+#include <queue>
 
 using namespace std;
 typedef unsigned char uchar;
@@ -15,15 +16,18 @@ typedef unsigned short int uint_s;
 
 BPTree::BPTree(int nodeSize) {
     this->nodeSize = nodeSize;
+    this->rootNode = NULL;
 }
 
 void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
+//    cout<< (void*)keyPtr<<endl;
     if (rootNode == NULL) {
         rootNode = new Node(nodeSize);
         rootNode->leaf = true;
         rootNode->key[0] = newKey;
         rootNode->curSize = 1;
         rootNode->childNode[0] = (Node *) keyPtr;
+        cout << "New Tree" << endl;
     } else //root node not null
     {
         Node *ptrNode = rootNode;
@@ -539,4 +543,36 @@ void BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
 
     }
 
+}
+
+void BPTree::printTree() {
+    uint numNodes = 0;
+    queue<Node *> printQueue;
+
+    if (rootNode != NULL) {
+        printQueue.push(rootNode);
+        printQueue.push(nullptr);
+    }
+    while (!printQueue.empty()) {
+        Node *curNode = printQueue.front();
+        printQueue.pop();
+
+        if (curNode == nullptr) {
+            if (!printQueue.empty()) cout << endl;
+        } else {
+            numNodes++;
+            cout << "[";
+            int i;
+            for (i = 0; i < curNode->curSize; i++) {
+                cout << curNode->key[i] << ((i != curNode->curSize - 1) ? " " : "");
+                if (!curNode->leaf && curNode->childNode != nullptr) {
+                    printQueue.push(curNode->childNode[i]);
+                }
+            }
+            cout << "] ";
+            if (!curNode->leaf) printQueue.push(curNode->childNode[i]);
+            if (printQueue.front() == nullptr) printQueue.push(nullptr);
+        }
+    }
+    cout << "No. of Nodes: " << numNodes << endl << endl;
 }

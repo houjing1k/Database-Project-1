@@ -11,7 +11,7 @@
 #include <chrono>
 #include <ctime>
 #include "VirtualDisk.h"
-
+#include "BPTree.h"
 
 
 using namespace std;
@@ -37,7 +37,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 
 
 int main() {
-    string fileDirectory = "..\\data\\data_100k.tsv";
+    string fileDirectory = "..\\data\\data_10.tsv";
 
     // Data Format: uchar fieldID, uchar dataType, size_t dataSize
     vector<tuple<uchar, uchar, size_t>> dataFormat;
@@ -51,7 +51,10 @@ int main() {
     // Create virtual disk of 50MB, block size 100B
     VirtualDisk virtualDisk(50000000, 100, 0.20);
 
+    // Create B+Tree Index of node size 3
+    BPTree bpTree(3);
 
+    // Add datasets to database
     cout << "Adding " << rawData.size() << " records to database..." << endl;
     bool success = true;
     int reportInterval = 1000;
@@ -74,15 +77,22 @@ int main() {
         }
 
         // Add Record
+        // <recordID, pBlk, recordNum>
         tuple<uint, void *, uint_s> dataMap = virtualDisk.addRecord(dataFormat, rawData[i]);
-        if (get<0>(dataMap) != -1)mappingTable.push_back(dataMap);
-        else {
+        if (get<0>(dataMap) != -1) { // If insertion success
+            mappingTable.push_back(dataMap); // add dataMap to mappingTable
+            int key = stoi(rawData[i][2]); //define key
+            cout << "adding bptree key: " << key << endl;
+            bpTree.insertKey(key, &mappingTable[i]);
+            bpTree.printTree();
+        } else {
             success = false;
             break;
         }
     }
     if (success) {
         cout << "Successfully added " << mappingTable.size() << " records" << endl;
+//        bpTree.printTree();
     } else {
         cout << "Operation aborted. Insertion error." << endl;
     }

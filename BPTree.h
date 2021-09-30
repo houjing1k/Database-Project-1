@@ -22,6 +22,7 @@ public:
     void insertKey(int,tuple<uint, void *, uint_s>*);
     int heightOfTree(Node* cursor);
     void deleteKey(int);
+    void printTree();
 
 private:
     void insertInternal(int newKey, Node* ptrNode, Node* child);
