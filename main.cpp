@@ -112,11 +112,11 @@ int main1() {
 //    }
 
     // Delete Record
-//    virtualDisk.deleteRecord(mappingTable[6]);
-//    virtualDisk.deleteRecord(mappingTable[7]);
-//    virtualDisk.deleteRecord(mappingTable[8]);
-//
-//    virtualDisk.reportStats();
+    virtualDisk.deleteRecord(mappingTable[6]);
+    virtualDisk.deleteRecord(mappingTable[7]);
+    virtualDisk.deleteRecord(mappingTable[8]);
+
+    virtualDisk.reportStats();
 
 
     system("pause");
