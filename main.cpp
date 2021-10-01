@@ -43,7 +43,7 @@ int main() {
     vector<tuple<uchar, uchar, size_t>> dataFormat;
     dataFormat.push_back(make_tuple(1, 's', 9));
     dataFormat.push_back(make_tuple(2, 'f', 1));
-    dataFormat.push_back(make_tuple(3, 'i', 2));
+    dataFormat.push_back(make_tuple(3, 'i', 3));
 
     // Read and parse tsv
     vector<vector<string>> rawData = readDatafile(fileDirectory);
