@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/BPTree.cpp
+climits
+-
+fstream
+-
+iostream
+-
+sstream
+-
+cmath
+-
+BPTree.h
+C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/BPTree.h
+Node.h
+C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/Node.h
+tuple
+-
+queue
+-
+
+C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/BPTree.h
+Node.h
+C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/Node.h
+
+C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/Node.h
+tuple
+-
+

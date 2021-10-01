@@ -1,0 +1,5 @@
+"D:\CLion\CLion 2021.2.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - MinGW Makefiles" "C:\Users\tay_k\OneDrive\Desktop\School\Database Principles\Database-Project-1"
+-- Found Boost: D:/MinGW/MinGW/include/ (found version "1.71.0") found components: system filesystem 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw

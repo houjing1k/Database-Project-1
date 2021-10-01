@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Database"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Database">
+				<Option output="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Database.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="D:/MinGW/MinGW/include"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0/x86_64-w64-mingw32"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/include"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/include-fixed"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 Database"/>
+					<CompileFile command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Database/fast">
+				<Option output="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Database.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="D:/MinGW/MinGW/include"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0/x86_64-w64-mingw32"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/include"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/include-fixed"/>
+					<Add directory="d:\mingw\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 Database/fast"/>
+					<CompileFile command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/MinGW/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/BPTree.cpp">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/BPTree.h">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/Node.h">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/VirtualDisk.cpp">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/VirtualDisk.h">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/main.cpp">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/try.cpp">
+			<Option target="Database"/>
+		</Unit>
+		<Unit filename="C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

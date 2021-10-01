@@ -32,11 +32,13 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
     {
         Node *ptrNode = rootNode;
         Node *parent;
+        int childPtr;
 
         while (ptrNode->leaf == false) //find the leaf node to insert new key
         {
             parent = ptrNode;
             for (int i = 0; i < ptrNode->curSize; i++) {
+                childPtr=i;
                 if (newKey < ptrNode->key[i]) //if newkey smaller than current key, traverse to ith child node
                 {
                     ptrNode = ptrNode->childNode[i];
@@ -78,19 +80,27 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                     keyCursor = i;
                     break;
                 }
+                else
+                {
+                    keyCursor = nodeSize;
+                }
             }
             for (int i = 0; i < nodeSize + 1; i++)//copy all keys and insert new key into tempNode
             {
                 if (keyCursor != i) {
                     tempNode->key[i] = ptrNode->key[j];
                     tempNode->childNode[i] = ptrNode->childNode[j];
+                    j++;
 
                 } else {
                     tempNode->key[i] = newKey;
                     tempNode->childNode[i] = (Node *) keyPtr;
-                    i++;
+
                 }
-                j++;
+
+            }
+            for(int i=0;i<nodeSize+1;i++)
+            {
 
             }
 
@@ -115,7 +125,9 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
             {
                 newLeaf->key[i] = tempNode->key[i + ptrNode->curSize];
                 newLeaf->childNode[i] = tempNode->childNode[i + ptrNode->curSize];
+                
             }
+
 
             if (ptrNode == rootNode) {
                 Node *newRoot = new Node(nodeSize);
@@ -157,6 +169,7 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
                     ptrNode->childNode[j] = ptrNode->childNode[j - 1];
                 }
                 ptrNode->key[i] = newKey;
+                ptrNode->childNode[i+1]=child;
                 ptrNode->curSize++;
                 break;
             }
