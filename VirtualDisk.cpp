@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
-const bool DEBUG_MODE = false;
+const bool DEBUG_MODE = true;
 
 using namespace std;
 
@@ -311,9 +311,11 @@ vector<tuple<uchar, string>> VirtualDisk::decodeRecord(vector<tuple<uchar, uchar
  * @param numBytes number of bytes
  */
 void VirtualDisk::intToBytes(uint integer, uchar *bytes, size_t numBytes) {
-    for (int i = 0; i < numBytes; i++) {
-        bytes[i] = (integer >> (i * 8)) & 0x00FF;
+    for (int i = numBytes - 1; i >= 0; i--) {
+        bytes[i] = (integer >> ((numBytes - 1 -i) * 8)) & 0x00FF;
     }
+    cout << "int: " << integer << endl;
+    printHex(bytes, numBytes, "intBytes");
 }
 
 /**
@@ -353,11 +355,12 @@ float VirtualDisk::bytesToFloat(uchar *bytes) {
  * @return decoded integer
  */
 uint VirtualDisk::bytesToInt(uchar *bytes, size_t numBytes) {
+    printHex(bytes, numBytes, "int");
     uint integer = 0;
     for (int i = 0; i < numBytes; i++) {
-        integer = (integer << 8 ) | bytes[i];
+        integer = (integer << 8) | bytes[i];
     }
-    cout<<integer<<endl;
+    cout << integer << endl;
     return integer;
 }
 
@@ -530,7 +533,7 @@ vector<tuple<uchar, uchar, size_t, uchar *>> VirtualDisk::fetchRecordFromBlock(u
     uchar *pHead = targetBlock + 3 + ((recordNum - 1) * 5);
     uint startOffset = (pHead[1] << 8) | pHead[2];
     uint endOffset = (pHead[3] << 8) | pHead[4];
-    uint recordSize = endOffset - startOffset;
+    uint recordSize = endOffset - startOffset+1;
 
     if (startOffset == 0 && endOffset == 0) {
         cout << "Record not found in target block" << endl;
@@ -539,6 +542,8 @@ vector<tuple<uchar, uchar, size_t, uchar *>> VirtualDisk::fetchRecordFromBlock(u
 
     uchar recordBytes[recordSize];
     memcpy(recordBytes, targetBlock + startOffset, recordSize);
+
+    printHex(recordBytes,recordSize,"recordBytes");
 
     uint numFields = recordBytes[0];
     uchar *pData = recordBytes + 1;
