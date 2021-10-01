@@ -13,6 +13,8 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
+const bool DEBUG_MODE = false;
+
 BPTree::BPTree(int nodeSize) {
     this->nodeSize = nodeSize;
     this->rootNode = nullptr;
@@ -26,7 +28,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
         rootNode->key[0] = newKey;
         rootNode->curSize = 1;
         rootNode->childNode[0] = (Node *) keyPtr;
-        cout << "New Tree" << endl;
+        if (DEBUG_MODE)cout << "New Tree" << endl;
     } else //root node not null
     {
         Node *ptrNode = rootNode;
@@ -53,7 +55,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
 
         if (ptrNode->curSize < nodeSize) //if leaf node still has space
         {
-            cout << "leaf node still has space" << endl;
+            if (DEBUG_MODE)cout << "leaf node still has space" << endl;
 
             int keyPointer = 0;
             for (int i = 0; i < ptrNode->curSize; i++) { //find position to insert key
@@ -75,8 +77,8 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
 
         } else //if leaf node no space, make new node
         {
-            cout << "leaf node no space, make new node" << endl;
-            printNode(ptrNode, "orig leaf node");
+            if (DEBUG_MODE)cout << "leaf node no space, make new node" << endl;
+            if (DEBUG_MODE)printNode(ptrNode, "orig leaf node");
             Node *newLeaf = new Node(nodeSize);
             newLeaf->leaf = true;
             Node *tempNode = new Node(nodeSize + 1);
@@ -165,11 +167,11 @@ int BPTree::heightOfTree(Node *cursor) //initial node should be root
 }
 
 void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
-    cout << "insert internal" << endl;
-    printNode(ptrNode, "orig internal node");
+    if (DEBUG_MODE)cout << "insert internal" << endl;
+    if (DEBUG_MODE)printNode(ptrNode, "orig internal node");
     if (ptrNode->curSize < nodeSize) //if internal node still has space
     {
-        cout << "internal node still has space" << endl;
+        if (DEBUG_MODE)cout << "internal node still has space" << endl;
 
         int keyPointer = 0;
         for (int i = 0; i < ptrNode->curSize; i++) { //find position to insert key
@@ -185,21 +187,21 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
         for (int j = ptrNode->curSize; j > keyPointer; j--) { //insert new key
             //move all keys back by 1
             ptrNode->key[j] = ptrNode->key[j - 1];
-            ptrNode->childNode[j+1] = ptrNode->childNode[j];
+            ptrNode->childNode[j + 1] = ptrNode->childNode[j];
         }
         ptrNode->key[keyPointer] = newKey;
-        ptrNode->childNode[keyPointer+1] = child;
+        ptrNode->childNode[keyPointer + 1] = child;
         ptrNode->curSize++;
 
-        printNode(ptrNode, "new internal node");
+        if (DEBUG_MODE)printNode(ptrNode, "new internal node");
 
     } else //if internal node no space, make new node
     {
-        cout << "internal node no space, make new node" << endl;
+        if (DEBUG_MODE)cout << "internal node no space, make new node" << endl;
         Node *newNode = new Node(nodeSize);
         newNode->leaf = false;
         Node *tempNode = new Node(nodeSize + 1);
-        tempNode->curSize=0;
+        tempNode->curSize = 0;
 
         int keyCursor = 0;
         for (int i = 0; i < ptrNode->curSize + 1; i++) { //find position to input new key
@@ -698,7 +700,7 @@ void BPTree::printTree(Node *root) {
     uint numNodes = 0;
     queue<Node *> printQueue;
 
-    cout << "Printing Tree" << endl;
+    cout << "+++++++++++++++++ Printing B+Tree +++++++++++++++++" << endl;
     if (root != nullptr) {
         printQueue.push(root);
         printQueue.push(nullptr);
@@ -713,7 +715,7 @@ void BPTree::printTree(Node *root) {
         if (curNode == nullptr) {
             if (printQueue.size() > 1) {
 //                cout << " \\n ";
-                cout << endl;
+                cout << endl << "  \\" << endl;
             }
         } else {
             numNodes++;
@@ -742,7 +744,7 @@ void BPTree::printTree(Node *root) {
             }
         }
     }
-    cout << "\nNo. of Nodes: " << numNodes << endl
+    cout << "\n++++++++++++++++++ No. of Nodes: " << numNodes << " ++++++++++++++++" << endl
          << endl;
 }
 
