@@ -5,6 +5,7 @@
 #ifndef DATABASE_BPTREE_H
 #define DATABASE_BPTREE_H
 #include "Node.h"
+#include<vector>
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -23,6 +24,8 @@ public:
     int heightOfTree(Node* cursor);
     void deleteKey(int);
     void printTree();
+    Node* searchForNode(int key);
+    vector<tuple<uint, void *, uint_s>> searchForRange(int start, int end);
 
 private:
     void insertInternal(int newKey, Node* ptrNode, Node* child);

@@ -38,7 +38,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
         {
             parent = ptrNode;
             for (int i = 0; i < ptrNode->curSize; i++) {
-                childPtr=i;
+                childPtr = i;
                 if (newKey < ptrNode->key[i]) //if newkey smaller than current key, traverse to ith child node
                 {
                     ptrNode = ptrNode->childNode[i];
@@ -63,6 +63,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                         ptrNode->childNode[j] = ptrNode->childNode[j - 1];
                     }
                     ptrNode->key[i] = newKey;
+                    ptrNode->childNode[i]=(Node*) keyPtr;
                     ptrNode->curSize++;
                     break;
                 }
@@ -79,9 +80,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                 if (newKey < ptrNode->key[i]) {
                     keyCursor = i;
                     break;
-                }
-                else
-                {
+                } else {
                     keyCursor = nodeSize;
                 }
             }
@@ -99,8 +98,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                 }
 
             }
-            for(int i=0;i<nodeSize+1;i++)
-            {
+            for (int i = 0; i < nodeSize + 1; i++) {
 
             }
 
@@ -125,7 +123,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
             {
                 newLeaf->key[i] = tempNode->key[i + ptrNode->curSize];
                 newLeaf->childNode[i] = tempNode->childNode[i + ptrNode->curSize];
-                
+
             }
 
 
@@ -158,7 +156,7 @@ int BPTree::heightOfTree(Node *cursor)//initial node should be root
 }
 
 void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
-    if (ptrNode->curSize < nodeSize) //if leaf node still has space
+    if (ptrNode->curSize < nodeSize) //if internal node still has space
     {
         for (int i = 0; i < ptrNode->curSize; i++) {
             if (newKey < ptrNode->key[i])//find position to insert key
@@ -169,15 +167,15 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
                     ptrNode->childNode[j] = ptrNode->childNode[j - 1];
                 }
                 ptrNode->key[i] = newKey;
-                ptrNode->childNode[i+1]=child;
+                ptrNode->childNode[i + 1] = child;
                 ptrNode->curSize++;
                 break;
             }
         }
-    } else //if leaf node no space, make new node
+    } else //if internal node no space, make new node
     {
         Node *newLeaf = new Node(nodeSize);
-        newLeaf->leaf = true;
+        newLeaf->leaf = false;
         Node *tempNode = new Node(nodeSize + 1);
         int keyCursor;
         int j = 0;
@@ -205,8 +203,8 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
 
         ptrNode->curSize = ceil((nodeSize + 1) / 2);
         newLeaf->curSize = floor((nodeSize + 1) / 2);
-        ptrNode->childNode[nodeSize] = newLeaf; //set last node ptr to point to next leaf node
-        newLeaf->childNode[nodeSize] = ptrNode->childNode[nodeSize];
+        //ptrNode->childNode[nodeSize] = newLeaf; //set last node ptr to point to next leaf node
+        //newLeaf->childNode[nodeSize] = ptrNode->childNode[nodeSize];
 
 
         for (int i = 0; i < nodeSize; i++)//copy from temp node to initial node, clearing excess keys
@@ -240,6 +238,58 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
         }
     }
 }
+
+Node *BPTree::searchForNode(int key) {
+    if (rootNode == NULL) {
+        return nullptr;
+    } else {
+        Node *ptrNode = rootNode;
+        int pointer = 0;
+        while (ptrNode->leaf == false) //find the leaf node with delete key
+        {
+
+            for (int i = 0; i < ptrNode->curSize; i++) {
+                if (key > ptrNode->key[i]) {
+                    pointer = i + 1;
+                    break;
+                }
+            }
+            ptrNode = ptrNode->childNode[pointer];
+        }
+        return ptrNode;
+    }
+}
+
+vector<tuple<uint, void *, uint_s>> BPTree::searchForRange(int start, int end) {
+    Node *searchNode;
+    searchNode = searchForNode(start);
+    if (searchNode == nullptr)
+        return {};
+    vector<tuple<uint, void *, uint_s>> rangeOfRecords;
+    int startKeyPos;
+    for (int i = 0;i<searchNode->curSize;i++)//find position of first key >= start in node
+    {
+        if(start<searchNode->key[i])
+        {
+            startKeyPos = i+1;
+        }
+    }
+    int cursorKey=startKeyPos;
+    while(searchNode->key[cursorKey]<=end)//find all keys in range
+    {
+        tuple<uint, void *, uint_s> * keyPtr = (tuple<uint, void *, uint_s> *) searchNode->childNode[cursorKey];
+        rangeOfRecords.push_back(*keyPtr);
+        cursorKey++;
+        if (cursorKey==searchNode->curSize-1)//if reach last key in node, jump to next node
+        {
+            searchNode = searchNode->childNode[nodeSize];
+            cursorKey = 0;
+        }
+    }
+    return rangeOfRecords;
+
+}
+
 
 Node *BPTree::findParent(Node *ptrNode, Node *child) {
     Node *parent;
@@ -280,143 +330,144 @@ void BPTree::deleteKey(int deleteKey) {
                     rightSibling = pointer + 1;
                     break;
                 }
+                parent = ptrNode;
+                ptrNode = ptrNode->childNode[pointer];
             }
-            parent = ptrNode;
-            ptrNode = ptrNode->childNode[pointer];
-        }
-        int keyPointer = 0;
-        bool keyExist = false;
-        for (int i = 0; i < ptrNode->curSize; i++)//find key in leaf node
-        {
-            if (deleteKey == ptrNode->key[i]) {
-                keyPointer = i;
-                keyExist = true;
-                break;
-            }
-        }
-        if (keyExist) {
-            ptrNode->key[keyPointer] = NULL; //delete key
-            ptrNode->curSize = ptrNode->curSize - 1;
-            ptrNode->childNode[keyPointer] = nullptr;
-
-            // CASE 1
-            if (ptrNode->curSize > floor((nodeSize + 1) / 2)) //if enough keys in node after deleting
+            int keyPointer = 0;
+            bool keyExist = false;
+            for (int i = 0; i < ptrNode->curSize; i++)//find key in leaf node
             {
-                for (int i = keyPointer; i < nodeSize; i++) //squeeze keys in node
-                {
-                    ptrNode->key[i] = ptrNode->key[i + 1];
+                if (deleteKey == ptrNode->key[i]) {
+                    keyPointer = i;
+                    keyExist = true;
+                    break;
                 }
-
-                if (pointer > 0 && keyPointer == 0) {
-                    parent->key[pointer - 1] = ptrNode->key[0]; //update parent key if neccessary
-                    // TODO update tree
-                }
-                return;
             }
-                //CASE 2 borrow from sibling node
-            else {
-                Node *rightSiblingNode = nullptr;
-                Node *leftSiblingNode = nullptr;
-                bool cannotShare = false;
-                if (leftSibling >= 0) //if left sibling exist
-                    leftSiblingNode = parent->childNode[leftSibling];
-                if (rightSibling < nodeSize + 2)//if right sibling exist
-                    rightSiblingNode = parent->childNode[rightSibling];
+            if (keyExist) {
+                ptrNode->key[keyPointer] = NULL; //delete key
+                ptrNode->curSize = ptrNode->curSize - 1;
+                ptrNode->childNode[keyPointer] = nullptr;
 
-                if (leftSiblingNode != nullptr) {
-                    if (leftSiblingNode->curSize - 1 > floor((nodeSize + 1) / 2))//if left sibling can share keys
-                    {
-                        int shareKey = leftSiblingNode->key[leftSiblingNode->curSize - 1];
-                        for (int i = 0;
-                             i < ptrNode->curSize; i++)//squeeze keys in delete node and leave first key empty
-                        {
-                            if (ptrNode->key[i] == NULL) {
-                                if (i == 0)
-                                    break;
-                                else {
-                                    for (int j = i; j > 0; j--) {
-                                        ptrNode->key[j] = ptrNode->key[j - 1];
-                                        ptrNode->childNode[j] = ptrNode->childNode[j - 1];
-                                    }
-                                    break;
-                                }
-
-                            }
-                        }
-                        //insert shared key in delete node
-                        ptrNode->key[0] = shareKey;
-                        ptrNode->childNode[0] = leftSiblingNode->childNode[leftSiblingNode->curSize - 1];
-                        ptrNode->curSize++;
-                        //delete shared key from sibling
-                        leftSiblingNode->key[leftSiblingNode->curSize - 1] = NULL;
-                        leftSiblingNode->childNode[leftSiblingNode->curSize - 1] = nullptr;
-                        leftSiblingNode->curSize--;
-
-                        //TODO update tree function
-                        return;
-                    } else {
-                        cannotShare = true;
-                    }
-                } else if (rightSiblingNode != NULL)//if right sibling can share keys
+                // CASE 1
+                if (ptrNode->curSize > floor((nodeSize + 1) / 2)) //if enough keys in node after deleting
                 {
-                    if (rightSiblingNode->curSize - 1 > floor((nodeSize + 1) / 2)) {
-                        int shareKey = rightSiblingNode->key[0];
-                        for (int i = 0; i < ptrNode->curSize; i++)//squeeze keys in delete node and leave last key empty
-                        {
-
-                            if (ptrNode->key[i] == NULL) {
-                                for (int j = i; j < nodeSize + 1; j--) {
-                                    ptrNode->key[j] = ptrNode->key[j + 1];
-                                    ptrNode->childNode[j] = ptrNode->childNode[j + 1];
-                                }
-                                break;
-                            }
-                        }
-                        //insert shared key in delete node
-                        ptrNode->key[ptrNode->curSize] = shareKey;
-                        ptrNode->childNode[ptrNode->curSize] = rightSiblingNode->childNode[0];
-                        ptrNode->curSize++;
-                        //delete shared key from sibling
-                        for (int i = 0; i < rightSiblingNode->curSize; i++) {
-                            rightSiblingNode->key[i] = rightSiblingNode->key[i + 1];
-                            rightSiblingNode->childNode[i] = rightSiblingNode->childNode[i + 1];
-                        }
-
-                        //TODO update tree function
-                        return;
-                    } else {
-                        cannotShare = true;
-                    }
-                }
-                if (cannotShare) //both left and right siblings unable to share keys
-                {
-                    for (int i = keyPointer; i < ptrNode->curSize; i++) //squeeze keys in node
+                    for (int i = keyPointer; i < nodeSize; i++) //squeeze keys in node
                     {
                         ptrNode->key[i] = ptrNode->key[i + 1];
                     }
-                    if (leftSiblingNode != NULL) {
-                        for (int i = 0; i < ptrNode->curSize; i++) {
-                            //transfer all keys into left sibling
-                            leftSiblingNode->key[leftSiblingNode->curSize + i] = ptrNode->key[i];
-                            leftSiblingNode->childNode[leftSiblingNode->curSize + i] = ptrNode->childNode[i];
+
+                    if (pointer > 0 && keyPointer == 0) {
+                        parent->key[pointer - 1] = ptrNode->key[0]; //update parent key if neccessary
+                        // TODO update tree
+                    }
+                    return;
+                }
+                    //CASE 2 borrow from sibling node
+                else {
+                    Node *rightSiblingNode = nullptr;
+                    Node *leftSiblingNode = nullptr;
+                    bool cannotShare = false;
+                    if (leftSibling >= 0) //if left sibling exist
+                        leftSiblingNode = parent->childNode[leftSibling];
+                    if (rightSibling < nodeSize + 2)//if right sibling exist
+                        rightSiblingNode = parent->childNode[rightSibling];
+
+                    if (leftSiblingNode != nullptr) {
+                        if (leftSiblingNode->curSize - 1 > floor((nodeSize + 1) / 2))//if left sibling can share keys
+                        {
+                            int shareKey = leftSiblingNode->key[leftSiblingNode->curSize - 1];
+                            for (int i = 0;
+                                 i < ptrNode->curSize; i++)//squeeze keys in delete node and leave first key empty
+                            {
+                                if (ptrNode->key[i] == NULL) {
+                                    if (i == 0)
+                                        break;
+                                    else {
+                                        for (int j = i; j > 0; j--) {
+                                            ptrNode->key[j] = ptrNode->key[j - 1];
+                                            ptrNode->childNode[j] = ptrNode->childNode[j - 1];
+                                        }
+                                        break;
+                                    }
+
+                                }
+                            }
+                            //insert shared key in delete node
+                            ptrNode->key[0] = shareKey;
+                            ptrNode->childNode[0] = leftSiblingNode->childNode[leftSiblingNode->curSize - 1];
+                            ptrNode->curSize++;
+                            //delete shared key from sibling
+                            leftSiblingNode->key[leftSiblingNode->curSize - 1] = NULL;
+                            leftSiblingNode->childNode[leftSiblingNode->curSize - 1] = nullptr;
+                            leftSiblingNode->curSize--;
+
+                            //TODO update tree function
+                            return;
+                        } else {
+                            cannotShare = true;
                         }
-                        //shift last ptr over to left sibling node
-                        leftSiblingNode->childNode[nodeSize + 1] = ptrNode->childNode[nodeSize + 1];
-                        leftSiblingNode->curSize += ptrNode->curSize;
-                        delete ptrNode;
-                        deleteInternal(parent->key[leftSibling], parent, leftSiblingNode);
-                        return;
-                    } else if (rightSiblingNode != NULL) {
-                        for (int i = 0; i < rightSiblingNode->curSize; i++) {
-                            //transfer all keys from right sibling
-                            ptrNode->key[ptrNode->curSize] = rightSiblingNode->key[i];
-                            ptrNode->childNode[ptrNode->curSize] = rightSiblingNode->childNode[i];
+                    } else if (rightSiblingNode != NULL)//if right sibling can share keys
+                    {
+                        if (rightSiblingNode->curSize - 1 > floor((nodeSize + 1) / 2)) {
+                            int shareKey = rightSiblingNode->key[0];
+                            for (int i = 0;
+                                 i < ptrNode->curSize; i++)//squeeze keys in delete node and leave last key empty
+                            {
+
+                                if (ptrNode->key[i] == NULL) {
+                                    for (int j = i; j < nodeSize + 1; j--) {
+                                        ptrNode->key[j] = ptrNode->key[j + 1];
+                                        ptrNode->childNode[j] = ptrNode->childNode[j + 1];
+                                    }
+                                    break;
+                                }
+                            }
+                            //insert shared key in delete node
+                            ptrNode->key[ptrNode->curSize] = shareKey;
+                            ptrNode->childNode[ptrNode->curSize] = rightSiblingNode->childNode[0];
+                            ptrNode->curSize++;
+                            //delete shared key from sibling
+                            for (int i = 0; i < rightSiblingNode->curSize; i++) {
+                                rightSiblingNode->key[i] = rightSiblingNode->key[i + 1];
+                                rightSiblingNode->childNode[i] = rightSiblingNode->childNode[i + 1];
+                            }
+
+                            //TODO update tree function
+                            return;
+                        } else {
+                            cannotShare = true;
                         }
-                        //shift last ptr over from right sibling node
-                        ptrNode->childNode[nodeSize + 1] = rightSiblingNode->childNode[nodeSize + 1];
-                        ptrNode->curSize += rightSiblingNode->curSize;
-                        delete rightSiblingNode;
-                        deleteInternal(parent->key[rightSibling - 1], parent, ptrNode);
+                    }
+                    if (cannotShare) //both left and right siblings unable to share keys
+                    {
+                        for (int i = keyPointer; i < ptrNode->curSize; i++) //squeeze keys in node
+                        {
+                            ptrNode->key[i] = ptrNode->key[i + 1];
+                        }
+                        if (leftSiblingNode != NULL) {
+                            for (int i = 0; i < ptrNode->curSize; i++) {
+                                //transfer all keys into left sibling
+                                leftSiblingNode->key[leftSiblingNode->curSize + i] = ptrNode->key[i];
+                                leftSiblingNode->childNode[leftSiblingNode->curSize + i] = ptrNode->childNode[i];
+                            }
+                            //shift last ptr over to left sibling node
+                            leftSiblingNode->childNode[nodeSize + 1] = ptrNode->childNode[nodeSize + 1];
+                            leftSiblingNode->curSize += ptrNode->curSize;
+                            delete ptrNode;
+                            deleteInternal(parent->key[leftSibling], parent, leftSiblingNode);
+                            return;
+                        } else if (rightSiblingNode != NULL) {
+                            for (int i = 0; i < rightSiblingNode->curSize; i++) {
+                                //transfer all keys from right sibling
+                                ptrNode->key[ptrNode->curSize] = rightSiblingNode->key[i];
+                                ptrNode->childNode[ptrNode->curSize] = rightSiblingNode->childNode[i];
+                            }
+                            //shift last ptr over from right sibling node
+                            ptrNode->childNode[nodeSize + 1] = rightSiblingNode->childNode[nodeSize + 1];
+                            ptrNode->curSize += rightSiblingNode->curSize;
+                            delete rightSiblingNode;
+                            deleteInternal(parent->key[rightSibling - 1], parent, ptrNode);
+                        }
                     }
                 }
             }
