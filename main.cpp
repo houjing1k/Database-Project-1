@@ -37,7 +37,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 
 
 int main() {
-    string fileDirectory = "..\\data\\data_10.tsv";
+    string fileDirectory = "..\\data\\data_10_tree.tsv";
 
     // Data Format: uchar fieldID, uchar dataType, size_t dataSize
     vector<tuple<uchar, uchar, size_t>> dataFormat;
@@ -84,7 +84,7 @@ int main() {
             int key = stoi(rawData[i][2]); //define key
             cout << "adding bptree key: " << key << endl;
             bpTree.insertKey(key, &mappingTable[i]);
-            bpTree.printTree();
+            bpTree.printTree(bpTree.rootNode);
         } else {
             success = false;
             break;
@@ -100,19 +100,19 @@ int main() {
     virtualDisk.reportStats();
 
     // Fetch Record
-    cout << "Fetching rec1" << endl;
-    vector<tuple<uchar, string>> rec1 = virtualDisk.fetchRecord(mappingTable[0]);
-    for (int i = 0; i < rec1.size(); i++) {
-        cout << "Field ID: " << (int) get<0>(rec1[i]) << endl;
-        cout << "Data: " << get<1>(rec1[i]) << endl;
-    }
+//    cout << "Fetching rec1" << endl;
+//    vector<tuple<uchar, string>> rec1 = virtualDisk.fetchRecord(mappingTable[0]);
+//    for (int i = 0; i < rec1.size(); i++) {
+//        cout << "Field ID: " << (int) get<0>(rec1[i]) << endl;
+//        cout << "Data: " << get<1>(rec1[i]) << endl;
+//    }
 
     // Delete Record
-    virtualDisk.deleteRecord(mappingTable[6]);
-    virtualDisk.deleteRecord(mappingTable[7]);
-    virtualDisk.deleteRecord(mappingTable[8]);
-
-    virtualDisk.reportStats();
+//    virtualDisk.deleteRecord(mappingTable[6]);
+//    virtualDisk.deleteRecord(mappingTable[7]);
+//    virtualDisk.deleteRecord(mappingTable[8]);
+//
+//    virtualDisk.reportStats();
 
 
     system("pause");

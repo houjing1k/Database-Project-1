@@ -16,6 +16,8 @@ class BPTree
 {
 private:
     int nodeSize;
+
+public :
     Node* rootNode;
 
 public:
@@ -23,9 +25,10 @@ public:
     void insertKey(int,tuple<uint, void *, uint_s>*);
     int heightOfTree(Node* cursor);
     void deleteKey(int);
-    void printTree();
     Node* searchForNode(int key);
     vector<tuple<uint, void *, uint_s>> searchForRange(int start, int end);
+    void printTree(Node*);
+    void printNode(Node* node, string label);
 
 private:
     void insertInternal(int newKey, Node* ptrNode, Node* child);

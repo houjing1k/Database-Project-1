@@ -63,7 +63,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                         ptrNode->childNode[j] = ptrNode->childNode[j - 1];
                     }
                     ptrNode->key[i] = newKey;
-                    ptrNode->childNode[i]=(Node*) keyPtr;
+                    ptrNode->childNode[i] = (Node *) keyPtr;
                     ptrNode->curSize++;
                     break;
                 }
@@ -156,15 +156,18 @@ int BPTree::heightOfTree(Node *cursor)//initial node should be root
 }
 
 void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
+    cout << "insert internal" << endl;
+    printNode(ptrNode, "orig node");
     if (ptrNode->curSize < nodeSize) //if internal node still has space
     {
+        cout << "internal node still has space" << endl;
         for (int i = 0; i < ptrNode->curSize; i++) {
             if (newKey < ptrNode->key[i])//find position to insert key
             {
                 for (int j = ptrNode->curSize; j > i; j--) {
                     //move all keys back by 1
                     ptrNode->key[j] = ptrNode->key[j - 1];
-                    ptrNode->childNode[j] = ptrNode->childNode[j - 1];
+                    ptrNode->childNode[j + 1] = ptrNode->childNode[j];
                 }
                 ptrNode->key[i] = newKey;
                 ptrNode->childNode[i + 1] = child;
@@ -174,6 +177,7 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
         }
     } else //if internal node no space, make new node
     {
+        cout << "internal node no space, make new node" << endl;
         Node *newLeaf = new Node(nodeSize);
         newLeaf->leaf = false;
         Node *tempNode = new Node(nodeSize + 1);
@@ -181,46 +185,49 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
         int j = 0;
         for (int i = 0; i < nodeSize; i++)//find position to input new key
         {
+            keyCursor = i;
             if (newKey < ptrNode->key[i]) {
-                keyCursor = i;
                 break;
             }
         }
+        cout << "keyCursor: " << keyCursor << endl;
         for (int i = 0; i < nodeSize + 1; i++)//copy all keys and insert new key into tempNode
         {
             if (keyCursor != i) {
                 tempNode->key[i] = ptrNode->key[j];
                 tempNode->childNode[i] = ptrNode->childNode[j];
-
+                cout << "insert " << ptrNode->key[j] << endl;
+                j++;
             } else {
                 tempNode->key[i] = newKey;
                 tempNode->childNode[i] = child;
-                i++;
+                cout << "insert new " << newKey << endl;
             }
-            j++;
-
+            tempNode->curSize++;
         }
 
-        ptrNode->curSize = ceil((nodeSize + 1) / 2);
-        newLeaf->curSize = floor((nodeSize + 1) / 2);
+        printNode(tempNode, "temp node");
+
+        ptrNode->curSize = ceil((nodeSize ) / 2);
+        newLeaf->curSize = floor((nodeSize) / 2);
         //ptrNode->childNode[nodeSize] = newLeaf; //set last node ptr to point to next leaf node
         //newLeaf->childNode[nodeSize] = ptrNode->childNode[nodeSize];
 
 
         for (int i = 0; i < nodeSize; i++)//copy from temp node to initial node, clearing excess keys
         {
-            if (i < ptrNode->curSize) {
-                ptrNode->key[i] = tempNode->key[i];
+            if (i < ptrNode->curSize+1) {
+                if(i<ptrNode->curSize) ptrNode->key[i] = tempNode->key[i];
                 ptrNode->childNode[i] = tempNode->childNode[i];
             } else {
-                ptrNode->key[i] = NULL;
+                if(i<ptrNode->curSize) ptrNode->key[i] = NULL;
                 ptrNode->childNode[i] = nullptr;
             }
 
         }
-        for (int i = 0; i < newLeaf->curSize; i++)//copy from temp node to new node
+        for (int i = 0; i < newLeaf->curSize+1; i++)//copy from temp node to new node
         {
-            newLeaf->key[i] = tempNode->key[i + ptrNode->curSize];
+            if(i<newLeaf->curSize) newLeaf->key[i] = tempNode->key[i + ptrNode->curSize];
             newLeaf->childNode[i] = tempNode->childNode[i + ptrNode->curSize];
         }
 
@@ -267,20 +274,19 @@ vector<tuple<uint, void *, uint_s>> BPTree::searchForRange(int start, int end) {
         return {};
     vector<tuple<uint, void *, uint_s>> rangeOfRecords;
     int startKeyPos;
-    for (int i = 0;i<searchNode->curSize;i++)//find position of first key >= start in node
+    for (int i = 0; i < searchNode->curSize; i++)//find position of first key >= start in node
     {
-        if(start<searchNode->key[i])
-        {
-            startKeyPos = i+1;
+        if (start < searchNode->key[i]) {
+            startKeyPos = i + 1;
         }
     }
-    int cursorKey=startKeyPos;
-    while(searchNode->key[cursorKey]<=end)//find all keys in range
+    int cursorKey = startKeyPos;
+    while (searchNode->key[cursorKey] <= end)//find all keys in range
     {
-        tuple<uint, void *, uint_s> * keyPtr = (tuple<uint, void *, uint_s> *) searchNode->childNode[cursorKey];
+        tuple<uint, void *, uint_s> *keyPtr = (tuple<uint, void *, uint_s> *) searchNode->childNode[cursorKey];
         rangeOfRecords.push_back(*keyPtr);
         cursorKey++;
-        if (cursorKey==searchNode->curSize-1)//if reach last key in node, jump to next node
+        if (cursorKey == searchNode->curSize - 1)//if reach last key in node, jump to next node
         {
             searchNode = searchNode->childNode[nodeSize];
             cursorKey = 0;
@@ -609,34 +615,69 @@ void BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
 
 }
 
-void BPTree::printTree() {
+void BPTree::printTree(Node *root) {
+    bool printAddress = false;
     uint numNodes = 0;
     queue<Node *> printQueue;
 
-    if (rootNode != NULL) {
-        printQueue.push(rootNode);
+    cout << "Printing Tree" << endl;
+    if (root != nullptr) {
+        printQueue.push(root);
         printQueue.push(nullptr);
+    } else {
+        cout << "Nothing to print." << endl;
+        return;
     }
     while (!printQueue.empty()) {
         Node *curNode = printQueue.front();
         printQueue.pop();
 
         if (curNode == nullptr) {
-            if (!printQueue.empty()) cout << endl;
+            if (printQueue.size()>1) {
+                cout<< " \\n ";
+                cout << endl;
+            }
         } else {
             numNodes++;
-            cout << "[";
+            if (printAddress) cout << curNode<<" ";
+            cout << "[" << (curNode->leaf ? "L" : "N") << curNode->curSize << " ";
             int i;
             for (i = 0; i < curNode->curSize; i++) {
-                cout << curNode->key[i] << ((i != curNode->curSize - 1) ? " " : "");
-                if (!curNode->leaf && curNode->childNode != nullptr) {
+                if (printAddress) cout << curNode->childNode[i] << " ";
+                cout << curNode->key[i] << " ";
+                if (!curNode->leaf && curNode->childNode[i] != nullptr) {
                     printQueue.push(curNode->childNode[i]);
                 }
             }
+            if (curNode->leaf) {
+                if (printAddress) cout << curNode->childNode[curNode->maxSize];
+            } else {
+                if (printAddress) cout << curNode->childNode[i];
+                printQueue.push(curNode->childNode[i]);
+            }
             cout << "] ";
-            if (!curNode->leaf) printQueue.push(curNode->childNode[i]);
-            if (printQueue.front() == nullptr) printQueue.push(nullptr);
+            if (printQueue.front() == nullptr && printQueue.size()>1) {
+//                cout<<" (NL) ";
+                printQueue.push(nullptr);
+            }
         }
     }
-    cout << "No. of Nodes: " << numNodes << endl << endl;
+    cout << "\nNo. of Nodes: " << numNodes << endl << endl;
+}
+
+void BPTree::printNode(Node *node, string label) {
+    if (node != nullptr) {
+        cout << "Print " << label << ": " << node << "[" << (node->leaf ? "L" : "N") << node->curSize << "/"
+             << node->maxSize << " ";
+        int i;
+        for (i = 0; i < node->curSize; i++) {
+            cout << node->childNode[i] << " ";
+            cout << node->key[i] << " ";
+        }
+        cout << node->childNode[i];
+        cout << "] " << endl;
+    } else {
+        cout << "Nothing to print." << endl;
+        return;
+    }
 }
