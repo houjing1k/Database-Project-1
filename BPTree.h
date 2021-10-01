@@ -35,6 +35,7 @@ private:
     Node* findParent(Node*, Node*);
     void deleteInternal(int deleteKey, Node* ptrNode, Node* child);
     void updateTreeAftDelete(int deleteKey, int newKey);
+    int getMinKey(Node* ptrNode);
 };
 
 

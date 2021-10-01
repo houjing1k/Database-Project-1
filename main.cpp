@@ -37,7 +37,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 
 
 int main() {
-    string fileDirectory = "..\\data\\data_10_tree.tsv";
+    string fileDirectory = "..\\data\\data_tree_3.tsv";
 
     // Data Format: uchar fieldID, uchar dataType, size_t dataSize
     vector<tuple<uchar, uchar, size_t>> dataFormat;
@@ -99,7 +99,7 @@ int main() {
 
     virtualDisk.reportStats();
 
-    // Fetch Record
+//     Fetch Record
 //    cout << "Fetching rec1" << endl;
 //    vector<tuple<uchar, string>> rec1 = virtualDisk.fetchRecord(mappingTable[0]);
 //    for (int i = 0; i < rec1.size(); i++) {

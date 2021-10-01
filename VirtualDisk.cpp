@@ -307,10 +307,10 @@ vector<tuple<uchar, string>> VirtualDisk::decodeRecord(vector<tuple<uchar, uchar
 /**
  * Encode an integer into a byte array
  * @param integer integer to encode
- * @param *bytes pointer of save location of encoded byte array
+ * @param bytes pointer of save location of encoded byte array
+ * @param numBytes number of bytes
  */
-void VirtualDisk::intToBytes(uint integer, uchar *bytes) {
-    int numBytes = sizeof(integer);
+void VirtualDisk::intToBytes(uint integer, uchar *bytes, size_t numBytes) {
     for (int i = 0; i < numBytes; i++) {
         bytes[i] = (integer >> (i * 8)) & 0x00FF;
     }
@@ -320,7 +320,7 @@ void VirtualDisk::intToBytes(uint integer, uchar *bytes) {
  * Encode a fix-sized string into a byte array
  * @param s string to encode
  * @param length length of fix-sized string
- * @param *bytes pointer of save location of encoded byte array
+ * @param bytes pointer of save location of encoded byte array
  */
 void VirtualDisk::fixedStringToBytes(string s, uint length, uchar *bytes) {
     for (int i = 0; i < length; i++) {
@@ -332,7 +332,7 @@ void VirtualDisk::fixedStringToBytes(string s, uint length, uchar *bytes) {
  * Encode a float (range from 0.0-10.0) into a byte array
  * Converts it into a range of 0-100 by multiplication of 10 to enable storing as an integer within 1 byte.
  * @param f float to encode
- * @param *bytes pointer of save location of encoded byte array
+ * @param bytes pointer of save location of encoded byte array
  */
 void VirtualDisk::floatToBytes(float f, uchar *bytes) {
     *bytes = (unsigned int) (f * 10);
@@ -340,7 +340,7 @@ void VirtualDisk::floatToBytes(float f, uchar *bytes) {
 
 /**
  * Decode into float (range from 0.0-10.0) from a byte array
- * @param *bytes byte array to decode
+ * @param bytes byte array to decode
  * @return decoded float
  */
 float VirtualDisk::bytesToFloat(uchar *bytes) {
@@ -349,20 +349,21 @@ float VirtualDisk::bytesToFloat(uchar *bytes) {
 
 /**
  * Decode into integer from a byte array
- * @param *bytes byte array to decode
+ * @param bytes byte array to decode
  * @return decoded integer
  */
-int VirtualDisk::bytesToInt(uchar *bytes, size_t numBytes) {
-    int integer = 0;
+uint VirtualDisk::bytesToInt(uchar *bytes, size_t numBytes) {
+    uint integer = 0;
     for (int i = 0; i < numBytes; i++) {
-        integer = (integer << 8) | bytes[i];
+        integer = (integer << 8 ) | bytes[i];
     }
+    cout<<integer<<endl;
     return integer;
 }
 
 /**
  * Decode into fix-sized string from a byte array
- * @param *bytes byte array to decode
+ * @param bytes byte array to decode
  * @param numBytes length of byte array
  * @return decoded string
  */
@@ -380,7 +381,7 @@ string VirtualDisk::bytesToFixedString(uchar *bytes, size_t numBytes) {
  * @param type field type
  * @param dataSize field data size
  * @param data field data
- * @param *field target location to save packed field
+ * @param field target location to save packed field
  */
 void VirtualDisk::packToField(string data, uchar fieldID, uchar type, size_t dataSize, uchar *field) {
     field[0] = fieldID;
@@ -396,7 +397,7 @@ void VirtualDisk::packToField(string data, uchar fieldID, uchar type, size_t dat
             floatToBytes(atof(data.c_str()), dataBytes);
             break;
         case 'i':
-            intToBytes(atoi(data.c_str()), dataBytes);
+            intToBytes(atoi(data.c_str()), dataBytes, dataSize);
             break;
     }
 
@@ -409,7 +410,7 @@ void VirtualDisk::packToField(string data, uchar fieldID, uchar type, size_t dat
  * Packs a set of packed field into a record with record header
  * @param fields a set of packed fields
  * @param numFields number of fields in each record
- * @param *record target location to save packed record
+ * @param record target location to save packed record
  */
 uint VirtualDisk::packToRecord(vector<uchar *> fields, uchar numFields, uchar *record) {
     uint recordSize = 0;

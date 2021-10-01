@@ -56,7 +56,7 @@ private:
 
     void writeBlock(uchar *pBlk, uchar *block);
 
-    void intToBytes(uint integer, uchar *bytes);
+    void intToBytes(uint integer, uchar *bytes, size_t numBytes);
 
     void fixedStringToBytes(string s, uint length, uchar *bytes);
 
@@ -64,7 +64,7 @@ private:
 
     float bytesToFloat(uchar *bytes);
 
-    int bytesToInt(uchar *bytes, size_t numBytes);
+    uint bytesToInt(uchar *bytes, size_t numBytes);
 
     string bytesToFixedString(uchar *bytes, size_t numBytes);
 
