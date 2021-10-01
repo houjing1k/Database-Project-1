@@ -264,7 +264,7 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
         if (ptrNode == rootNode) {
             Node *newRoot = new Node(nodeSize);
             newRoot->leaf = false;
-            newRoot->key[0] = newNode->key[0]; //key of new root is smallest key on right node
+            newRoot->key[0] = getMinKey(newNode); //key of new root is smallest key on right node
             newRoot->curSize = 1;
             newRoot->childNode[0] = ptrNode; //set child pointers
             newRoot->childNode[1] = newNode;
