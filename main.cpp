@@ -190,30 +190,6 @@ int main1() {
     size_t diskSize, blockSize;
     float blkHeaderRatio = 0.20;
 
-    size_t blkSize = 100;
-    Node* n1 = new Node(blkSize);
-    n1->setLeaf(true);
-    n1->setCurSize(3);
-    n1->setChildNode(0,n1);
-    n1->setChildNode(1,n1);
-    n1->setChildNode(2,n1);
-    n1->setChildNode(3,n1);
-    n1->setKey(0, 1234);
-    n1->setKey(1, 1111);
-    n1->setKey(2, 555555);
-
-    cout<<"n1 range: "<<(void*) n1<<" - "<<(void*)(n1+1) <<endl;
-    cout<<"leaf: "<<(n1->isLeaf())<<endl;
-    cout<<"curSize: "<<(n1->getCurSize())<<endl;
-    cout<<"maxSize: "<<(n1->getMaxSize())<<endl;
-    cout<<"key[0]: "<<(n1->getKey(0))<<endl;
-    cout<<"key[1]: "<<(n1->getKey(1))<<endl;
-    cout<<"key[2]: "<<(n1->getKey(2))<<endl;
-    cout<<"childNode[0]: "<<(n1->getChildNode(0))<<endl;
-    cout<<"childNode[1]: "<<(n1->getChildNode(1))<<endl;
-    cout<<"childNode[2]: "<<(n1->getChildNode(2))<<endl;
-    cout<<"childNode[3]: "<<(n1->getChildNode(3))<<endl;
-
     while (selectedFilePath.empty()) {
 //        system("cls");
         cout << "############## CZ4031 Database Project 1 ##############" << endl;
@@ -249,7 +225,7 @@ int main1() {
     VirtualDisk virtualDisk(diskSize * 1000000, blockSize, blkHeaderRatio);
 
     // Create B+Tree for indexing
-    BPTree bpTree(3);
+    BPTree bpTree(blockSize);
 
     cout << endl << "Press any key to proceed inserting records into virtual disk..." << endl;
     system("pause");
@@ -267,32 +243,47 @@ int main1() {
         cout << "============== Database Menu ===============" << endl;
         cout << "1. Print virtual disk statistics" << endl;
         cout << "2. Print B+Tree index statistics" << endl;
-        cout << "3. Print virtual disk data" << endl;
+        cout << "3. Print virtual disk data (TBC)" << endl;
         cout << "4. Print B+Tree" << endl;
         cout << "============================================" << endl;
-        cout << "5. Fetch record (single)" << endl;
+        cout << "5. Fetch record (single) (TBC)" << endl;
         cout << "6. Fetch record (range)" << endl;
-        cout << "7. Delete record (single)" << endl;
+        cout << "7. Delete record (single) (TBC)" << endl;
         cout << "============================================" << endl;
         cout << "0. Quit" << endl;
         cout << "============================================" << endl;
         int selection;
         cin >> selection;
         if (selection == 0) break;
+        vector<vector<tuple<uint, void *, uint_s> *>> results;
         switch (selection) {
             case 1: // Print virtual disk statistics
                 virtualDisk.reportStats();
                 break;
             case 2: // Print B+Tree index statistics
-                bpTree.printTree(bpTree.rootNode);
+                bpTree.printTreeStats();
                 break;
             case 3: // Print virtual disk data
                 break;
             case 4: // Print B+Tree
+                bpTree.printTree(bpTree.rootNode);
                 break;
             case 5: // Fetch record (single)
                 break;
             case 6: // Fetch record (range)
+                cout << "Start Key: ";
+                uint startKey;
+                cin >> startKey;
+                cout << "End Key: ";
+                uint endKey;
+                cin >> endKey;
+                results = bpTree.searchForRange(startKey, endKey);
+//                for (int i = 0; i < results.size(); i++) {
+//                    vector<tuple<uchar, string>> record = virtualDisk.fetchRecord(results[i]);
+//                    string tconst = get<1>(record[0]);
+//                    float avgRating = get<1>(record[1]);
+//                }
+                cout << "Successfully deleted " << results.size() << " records." << endl;
                 break;
             case 7: // Delete record (single)
                 break;

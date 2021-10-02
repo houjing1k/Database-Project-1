@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
-const bool DEBUG_MODE = false;
+const bool DEBUG_MODE = true;
 
 BPTree::BPTree(size_t blockSize) {
     this->nodeSize = (blockSize - 13) / 12;
@@ -35,7 +35,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
         vecKeys->push_back(keyPtr);
         rootNode->setChildNode(0, (Node *) vecKeys);
         if (DEBUG_MODE)cout << "New Tree " << endl;
-        printNode(rootNode,"debug");
+        if(DEBUG_MODE)printNode(rootNode,"debug");
     } else //root node not null
     {
 
@@ -116,25 +116,24 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                     if (keyCursor != i) {
                         tempNode->setKey(i, ptrNode->getKey(j));
                         tempNode->setChildNode(i, ptrNode->getChildNode(j));
-//                    cout << "add " << ptrNode->key[j] << endl;
+                        if(DEBUG_MODE)cout << "add " << ptrNode->getKey(j) << endl;
                         j++;
                     } else {
                         tempNode->setKey(i, newKey);
-                        ptrNode->setChildNode(i, (Node *) vecKeys);
-
-//                    cout << "add new " << newKey << endl;
+                        tempNode->setChildNode(i, (Node *) vecKeys);
+                        if(DEBUG_MODE)cout << "add new " << newKey << endl;
                     }
                     tempNode->incCurSize();
                 }
                 tempNode->setChildNode(nodeSize + 1, ptrNode->getChildNode(nodeSize));
 
-//            printNode(tempNode, "temp leaf node");
+                if(DEBUG_MODE)printNode(tempNode, "temp leaf node");
 
                 ptrNode->setCurSize(ceil((nodeSize + 1) / 2));
                 newLeaf->setCurSize(floor((nodeSize + 1) / 2));
 
-//            cout << "ptrNode->curSize: " << ptrNode->curSize << endl;
-//            cout << "newLeaf->curSize: " << newLeaf->curSize << endl;
+                if(DEBUG_MODE)cout << "ptrNode->curSize: " << ptrNode->getCurSize() << endl;
+                if(DEBUG_MODE)cout << "newLeaf->curSize: " << newLeaf->getCurSize() << endl;
 
                 for (int i = 0; i < nodeSize; i++) //copy from temp node to initial node, clearing excess keys
                 {
@@ -155,8 +154,8 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                 ptrNode->setChildNode(nodeSize,newLeaf); //set last node ptr to point to next leaf node
                 newLeaf->setChildNode(nodeSize,tempNode->getChildNode(nodeSize + 1));
 
-//            printNode(ptrNode, "orig leaf node");
-//            printNode(newLeaf, "new leaf node");
+            printNode(ptrNode, "orig leaf node");
+            printNode(newLeaf, "new leaf node");
 
                 if (ptrNode == rootNode) {
                     Node *newRoot = new Node(nodeSize);
@@ -346,6 +345,7 @@ vector<vector<tuple<uint, void *, uint_s> *>> BPTree::searchForRange(int start, 
     int cursorKey = startKeyPos;
     while (searchNode->getKey(cursorKey) <= end) //find all keys in range
     {
+        printNode(searchNode,"search node");
         vector<tuple<uint, void *, uint_s> *> * keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
                 cursorKey);
         rangeOfRecords.push_back(*keyPtr);
@@ -355,7 +355,7 @@ vector<vector<tuple<uint, void *, uint_s> *>> BPTree::searchForRange(int start, 
         {
             cout<<"in if"<<endl;
             searchNode = searchNode->getChildNode(nodeSize);
-            cout<<"Jump to Next Node"<<endl;
+            cout<<"Jump to Next Node "<<(void*)searchNode<<endl;
             cursorKey = 0;
         } else
         {
@@ -741,7 +741,7 @@ int BPTree::getMinKey(Node *ptrNode) {
 }
 
 void BPTree::printTree(Node *root) {
-    bool printAddress = false;
+    bool printAddress = true;
     uint numNodes = 0;
     queue<Node *> printQueue;
 
