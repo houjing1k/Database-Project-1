@@ -85,6 +85,7 @@ int main() {
             cout << "adding bptree key: " << key << endl;
             bpTree.insertKey(key, &mappingTable[i]);
             bpTree.printTree(bpTree.rootNode);
+
         } else {
             success = false;
             break;
@@ -93,6 +94,9 @@ int main() {
     if (success) {
         cout << "Successfully added " << mappingTable.size() << " records" << endl;
 //        bpTree.printTree();
+        bpTree.deleteKey(1342);
+        bpTree.printTree(bpTree.rootNode);
+
     } else {
         cout << "Operation aborted. Insertion error." << endl;
     }
@@ -108,11 +112,11 @@ int main() {
 //    }
 
     // Delete Record
-    virtualDisk.deleteRecord(mappingTable[6]);
-    virtualDisk.deleteRecord(mappingTable[7]);
-    virtualDisk.deleteRecord(mappingTable[8]);
+//    virtualDisk.deleteRecord(mappingTable[6]);
+//    virtualDisk.deleteRecord(mappingTable[7]);
+//    virtualDisk.deleteRecord(mappingTable[8]);
 
-    virtualDisk.reportStats();
+//    virtualDisk.reportStats();
 
 
     system("pause");

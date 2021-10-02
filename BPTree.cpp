@@ -356,6 +356,8 @@ void BPTree::deleteKey(int deleteKey) {
         int pointer = 0;
         while (ptrNode->leaf == false) //find the leaf node with delete key
         {
+            pointer = 0;
+            cout<<ptrNode->key[0]<<" leaf? = "<<ptrNode->leaf<<endl;
             for (int i = 0; i < ptrNode->curSize; i++) {
                 if (deleteKey < ptrNode->key[i]) {
                     pointer = i;
@@ -364,12 +366,15 @@ void BPTree::deleteKey(int deleteKey) {
                     break;
                 } else {
                     pointer = ptrNode->curSize;
+                    leftSibling = pointer - 1;
+                    rightSibling = pointer + 1;
                 }
 
-                parent = ptrNode;
-                ptrNode = ptrNode->childNode[pointer];
             }
+            parent = ptrNode;
+            ptrNode = ptrNode->childNode[pointer];
         }
+
         int keyPointer = 0;
         bool keyExist = false;
         for (int i = 0; i < ptrNode->curSize; i++) //find key in leaf node
@@ -381,7 +386,7 @@ void BPTree::deleteKey(int deleteKey) {
             }
         }
         if (!keyExist) {
-            cout << "key to be deleted cannot be found";
+            cout << "key to be deleted cannot be found"<<endl;
             return;
         } else { //key exist
             ptrNode->key[keyPointer] = NULL; //delete key
@@ -395,8 +400,8 @@ void BPTree::deleteKey(int deleteKey) {
                 {
                     ptrNode->key[i] = ptrNode->key[i + 1];
                 }
-
-                if (pointer > 0 && keyPointer == 0) {
+                //cout<<"debug1: "<<pointer<<" "<<keyPointer<<endl;
+                if (keyPointer == 0) {
                     //parent->key[pointer - 1] = ptrNode->key[0]; //update parent key if neccessary
                     // TODO update tree
                     updateTreeAftDelete(deleteKey, ptrNode->key[0]);
@@ -414,8 +419,11 @@ void BPTree::deleteKey(int deleteKey) {
                     rightSiblingNode = parent->childNode[rightSibling];
 
                 if (leftSiblingNode != nullptr) {
-                    if (leftSiblingNode->curSize - 1 > floor((nodeSize + 1) / 2)) //if left sibling can share keys
+                    cout<<"debugLSN "<<leftSiblingNode->curSize - 1<<" vs "<<floor((nodeSize + 1) / 2)<<endl;
+                    if (leftSiblingNode->curSize - 1 >= floor((nodeSize + 1) / 2)) //if left sibling can share keys
                     {
+                        cout<<"debug in left if"<<endl;
+
                         int shareKey = leftSiblingNode->key[leftSiblingNode->curSize - 1];
                         for (int i = 0;
                              i < ptrNode->curSize; i++) //squeeze keys in delete node and leave first key empty
@@ -440,7 +448,7 @@ void BPTree::deleteKey(int deleteKey) {
                         leftSiblingNode->key[leftSiblingNode->curSize - 1] = NULL;
                         leftSiblingNode->childNode[leftSiblingNode->curSize - 1] = nullptr;
                         leftSiblingNode->curSize--;
-
+                        cout<<"before update "<<ptrNode->key[0]<<endl;
                         //TODO update tree function
                         updateTreeAftDelete(deleteKey, ptrNode->key[0]);
                         return;
@@ -449,6 +457,7 @@ void BPTree::deleteKey(int deleteKey) {
                     }
                 } else if (rightSiblingNode != NULL) //if right sibling can share keys
                 {
+
                     if (rightSiblingNode->curSize - 1 >= floor((nodeSize + 1) / 2)) {
                         cannotShare = false;
                         int shareKey = rightSiblingNode->key[0];
@@ -482,6 +491,7 @@ void BPTree::deleteKey(int deleteKey) {
                 }
                 if (cannotShare) //both left and right siblings unable to share keys
                 {
+
                     for (int i = keyPointer; i < ptrNode->curSize; i++) //squeeze keys in node
                     {
                         ptrNode->key[i] = ptrNode->key[i + 1];
@@ -489,6 +499,7 @@ void BPTree::deleteKey(int deleteKey) {
                     if (leftSiblingNode != NULL) {
                         for (int i = 0; i < ptrNode->curSize; i++) {
                             //transfer all keys into left sibling
+
                             leftSiblingNode->key[leftSiblingNode->curSize + i] = ptrNode->key[i];
                             leftSiblingNode->childNode[leftSiblingNode->curSize + i] = ptrNode->childNode[i];
                         }
@@ -499,6 +510,7 @@ void BPTree::deleteKey(int deleteKey) {
                         deleteInternal(parent->key[leftSibling], parent, leftSiblingNode);
                         return;
                     } else if (rightSiblingNode != NULL) {
+
                         for (int i = 0; i < rightSiblingNode->curSize; i++) {
                             //transfer all keys from right sibling
                             ptrNode->key[ptrNode->curSize] = rightSiblingNode->key[i];
@@ -648,6 +660,7 @@ void BPTree::updateTreeAftDelete(int deleteKey, int newKey) {
         pointer = 0;
         for (int i = 0; i < ptrNode->curSize; i++) //search within the node
         {
+            cout<<"loop "<<ptrNode->key[i]<<endl;
             if (ptrNode->key[i] == deleteKey) //if key found
             {
                 ptrNode->key[i] = newKey;
@@ -656,7 +669,7 @@ void BPTree::updateTreeAftDelete(int deleteKey, int newKey) {
             }
             else if (deleteKey > ptrNode->key[i]) //find which child pointer to go
             {
-                    pointer = i;
+                    pointer = i+1;
             }
 
         }
