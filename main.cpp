@@ -40,7 +40,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 
 int main() {
 
-    string fileDirectory = "..\\data\\data_tree_3.tsv";
+    string fileDirectory = "..\\data\\data_tree_4.tsv";
 
     // Data Format: uchar fieldID, uchar dataType, size_t dataSize
     vector<tuple<uchar, uchar, size_t>> dataFormat;
@@ -96,6 +96,14 @@ int main() {
     }
     if (success) {
         cout << "Successfully added " << mappingTable.size() << " records" << endl;
+        //bpTree.deleteKey(1342);
+        //bpTree.printTree(bpTree.rootNode);
+        bpTree.deleteKey(120);
+        bpTree.printTree(bpTree.rootNode);
+        bpTree.deleteKey(115);
+        bpTree.printTree(bpTree.rootNode);
+        bpTree.deleteKey(652);
+        bpTree.printTree(bpTree.rootNode);
     } else {
         cout << "Operation aborted. Insertion error." << endl;
     }
