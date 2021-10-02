@@ -105,7 +105,7 @@ int main() {
         //bpTree.deleteKey(652);
         //bpTree.printTree(bpTree.rootNode);
 
-        vector<tuple<uint, void *, uint_s> *> results = bpTree.searchForRange(1342, 5000);
+        vector<tuple<uint, void *, uint_s> *> results = bpTree.searchForRange(800, 5000);
         cout << "num of results: " << results.size() << endl;
         for (int i = 0; i < results.size(); i++) {
             vector<tuple<uchar, string>> record = virtualDisk.fetchRecord(*results[i]);
@@ -135,7 +135,9 @@ int main() {
 //    virtualDisk.deleteRecord(mappingTable[6]);
 //    virtualDisk.deleteRecord(mappingTable[7]);
 //    virtualDisk.deleteRecord(mappingTable[8]);
-//
+
+//    vector<tuple<uint, void *, uint_s> *> results = bpTree.deleteKey(1342);
+
 //    virtualDisk.reportStats();
 
 
@@ -256,7 +258,7 @@ int main1() {
         cout << "3. Print virtual disk allocated blocks" << endl;
         cout << "4. Print B+Tree" << endl;
         cout << "============================================" << endl;
-        cout << "5. Fetch record (single) (TBC)" << endl;
+        cout << "5. Fetch record (single)" << endl;
         cout << "6. Fetch record (range)" << endl;
         cout << "7. Delete record (single) (TBC)" << endl;
         cout << "============================================" << endl;
@@ -265,7 +267,10 @@ int main1() {
         int selection;
         cin >> selection;
         if (selection == 0) break;
+
         vector<tuple<uint, void *, uint_s> *> results;
+        uint startKey, endKey;
+
         switch (selection) {
             case 1: // Print virtual disk statistics
                 virtualDisk.reportStats();
@@ -280,13 +285,25 @@ int main1() {
                 bpTree.printTree(bpTree.rootNode);
                 break;
             case 5: // Fetch record (single)
+                cout << "Search Key: ";
+                cin >> startKey;
+                endKey = startKey;
+                results = bpTree.searchForRange(startKey, endKey);
+                for (int i = 0; i < results.size(); i++) {
+                    vector<tuple<uchar, string>> record = virtualDisk.fetchRecord(*results[i]);
+                    string tconst = get<1>(record[0]);
+                    float avgRating = stoi(get<1>(record[1]));
+                    uint numVotes = stof(get<1>(record[2]));
+                    cout << "tconst: " << tconst << endl;
+                    cout << "avgRating: " << avgRating << endl;
+                    cout << "numVotes: " << numVotes << endl;
+                }
+                cout << "Found " << results.size() << " records." << endl;
                 break;
             case 6: // Fetch record (range)
                 cout << "Start Key: ";
-                uint startKey;
                 cin >> startKey;
                 cout << "End Key: ";
-                uint endKey;
                 cin >> endKey;
                 results = bpTree.searchForRange(startKey, endKey);
                 for (int i = 0; i < results.size(); i++) {
@@ -298,7 +315,7 @@ int main1() {
                     cout << "avgRating: " << avgRating << endl;
                     cout << "numVotes: " << numVotes << endl;
                 }
-                cout << "Successfully deleted " << results.size() << " records." << endl;
+                cout << "Found " << results.size() << " records." << endl;
                 break;
             case 7: // Delete record (single)
                 break;

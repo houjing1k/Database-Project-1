@@ -87,6 +87,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                 }
                 ptrNode->setKey(keyPointer, newKey);
                 vector<tuple<uint, void *, uint_s> *> *vecKeys = new vector<tuple<uint, void *, uint_s> *>;
+                vecKeys->push_back(keyPtr);
                 ptrNode->setChildNode(keyPointer, (Node *) vecKeys);
                 ptrNode->incCurSize();
 
@@ -442,6 +443,8 @@ void BPTree::deleteKey(int deleteKey) {
             cout << "key to be deleted cannot be found" << endl;
             return;
         } else { //key exist
+            auto* deletedRecord = (vector<tuple<uint, void *, uint_s> *>*)ptrNode->getChildNode(keyPointer);
+
             ptrNode->setKey(keyPointer, NULL); //delete key
             ptrNode->decCurSize();
             ptrNode->setChildNode(keyPointer, nullptr);
