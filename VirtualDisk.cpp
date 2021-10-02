@@ -572,7 +572,7 @@ size_t VirtualDisk::getBlockSize() {
  * Function to print memory address range in formatted hex
  */
 void VirtualDisk::printHex(unsigned char *target, size_t size, string label) {
-    cout << "Print " << label << " [" << static_cast<void *>(target) << "] :";
+    cout << "Print " << label << " [" << (void*)target << "] :";
     for (int i = 0; i < size; ++i) {
         if (i % 20 == 0) cout << endl;
         printf("%02x ", *(target + i));

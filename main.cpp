@@ -89,7 +89,7 @@ int main1() {
             int key = stoi(rawData[i][2]); //define key
             cout << "adding bptree key: " << key << endl;
             bpTree.insertKey(key, mappingTable[i]);
-            bpTree.printTree(bpTree.rootNode);
+            bpTree.printTree(bpTree.rootNode,0);
         } else {
             success = false;
             break;
@@ -121,7 +121,7 @@ int main1() {
     }
 
     virtualDisk.reportStats();
-    bpTree.printTree(bpTree.rootNode);
+    bpTree.printTree(bpTree.rootNode,0);
 
 //     Fetch Record
 //    cout << "Fetching rec1" << endl;
@@ -182,7 +182,7 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
             int key = stoi(rawData[i][2]); //define key
             cout << "adding bptree key: " << key << endl;
             bpTree->insertKey(key, mappingTable[i]);
-            bpTree->printTree(bpTree->rootNode);
+            bpTree->printTree(bpTree->rootNode,0);
         } else {
             success = false;
             break;
@@ -260,7 +260,7 @@ int main() {
         cout << "============================================" << endl;
         cout << "5. Fetch record (single)" << endl;
         cout << "6. Fetch record (range)" << endl;
-        cout << "7. Delete record (single) (TBC)" << endl;
+        cout << "7. Delete record (single)" << endl;
         cout << "============================================" << endl;
         cout << "0. Quit" << endl;
         cout << "============================================" << endl;
@@ -269,7 +269,7 @@ int main() {
         if (selection == 0) break;
 
         vector<tuple<uint, void *, uint_s> *> results;
-        uint startKey, endKey;
+        uint startKey, endKey, height;
 
         switch (selection) {
             case 1: // Print virtual disk statistics
@@ -282,7 +282,10 @@ int main() {
                 virtualDisk.printAllocatedBlocks();
                 break;
             case 4: // Print B+Tree
-                bpTree.printTree(bpTree.rootNode);
+                cout<<"Current height of tree: "<<bpTree.heightOfTree(bpTree.rootNode)<<endl;
+                cout<<"Height of tree to print (0 to print whole tree):";
+                cin>>height;
+                bpTree.printTree(bpTree.rootNode,height);
                 break;
             case 5: // Fetch record (single)
                 cout << "Search Key: ";
@@ -325,6 +328,8 @@ int main() {
                     virtualDisk.deleteRecord(*results[i]);
                 }
                 cout << "Deleted " << results.size() << " records." << endl;
+                bpTree.printNode(bpTree.rootNode,"Root Node");
+                bpTree.printNode(bpTree.rootNode->getChildNode(0),"1st Child Node");
                 break;
             default:
                 cout << "Invalid input." << endl;

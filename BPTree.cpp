@@ -319,7 +319,7 @@ Node *BPTree::searchForNode(int key) {
             pointer = 0;
 
             for (int i = 0; i < ptrNode->getCurSize(); i++) {
-                cout<<"key: "<<key<<" nodeKey: "<<ptrNode->getKey(i)<<endl;
+                cout << "key: " << key << " nodeKey: " << ptrNode->getKey(i) << endl;
                 if (key >= ptrNode->getKey(i)) {
                     pointer = i;
 
@@ -355,25 +355,25 @@ vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end)
     while (searchNode->getKey(cursorKey) <= end) //find all keys in range
     {
         printNode(searchNode, "search node");
-        if(searchNode->getKey(cursorKey) >= start) {
+        if (searchNode->getKey(cursorKey) >= start) {
             vector<tuple<uint, void *, uint_s> *> *keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
                     cursorKey);
             rangeOfRecords.insert(rangeOfRecords.end(), keyPtr->begin(), keyPtr->end());
             cout << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
         }
-            //rangeOfRecords.push_back(*keyPtr);
+        //rangeOfRecords.push_back(*keyPtr);
 
 
-            if (cursorKey == searchNode->getCurSize() - 1) //if reach last key in node, jump to next node
-            {
-                cout << "in if" << endl;
-                searchNode = searchNode->getChildNode(nodeSize);
-                cout << "Jump to Next Node " << (void *) searchNode << endl;
-                cursorKey = 0;
-            } else {
-                cursorKey++;
-                cout << "in else " << cursorKey << endl;
-            }
+        if (cursorKey == searchNode->getCurSize() - 1) //if reach last key in node, jump to next node
+        {
+            cout << "in if" << endl;
+            searchNode = searchNode->getChildNode(nodeSize);
+            cout << "Jump to Next Node " << (void *) searchNode << endl;
+            cursorKey = 0;
+        } else {
+            cursorKey++;
+            cout << "in else " << cursorKey << endl;
+        }
 
     }
     return rangeOfRecords;
@@ -402,7 +402,7 @@ Node *BPTree::findParent(Node *ptrNode, Node *child) {
 
 vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
     if (rootNode == NULL) {
-        return{};
+        return {};
     } else {
         Node *ptrNode = rootNode;
         Node *parent;
@@ -442,10 +442,11 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
         }
         if (!keyExist) {
             cout << "key to be deleted cannot be found" << endl;
-            return{};
+            return {};
         } else { //key exist
 
-            vector<tuple<uint, void *, uint_s> *> *deletedRecord = (vector<tuple<uint, void *, uint_s> *> *) ptrNode->getChildNode(keyPointer);
+            vector<tuple<uint, void *, uint_s> *> *deletedRecord = (vector<tuple<uint, void *, uint_s> *> *) ptrNode->getChildNode(
+                    keyPointer);
             ptrNode->setKey(keyPointer, NULL); //delete key
             ptrNode->decCurSize();
             ptrNode->setChildNode(keyPointer, nullptr);
@@ -756,9 +757,10 @@ int BPTree::getMinKey(Node *ptrNode) {
     return ptrNode->getKey(0);
 }
 
-void BPTree::printTree(Node *root) {
-    bool printAddress = true;
+void BPTree::printTree(Node *root, uint height) {
+    bool printAddress = false;
     uint numNodes = 0;
+    uint curHeight = 0;
     queue<Node *> printQueue;
 
     cout << "+++++++++++++++++ Printing B+Tree +++++++++++++++++" << endl;
@@ -777,6 +779,10 @@ void BPTree::printTree(Node *root) {
             if (printQueue.size() > 1) {
 //                cout << " \\n ";
                 cout << endl << "  \\" << endl;
+                if (height != 0 && curHeight == height) {
+                    cout << "Tree stopped printing at height " << curHeight << endl;
+                    break;
+                }
             }
         } else {
             numNodes++;
@@ -802,6 +808,7 @@ void BPTree::printTree(Node *root) {
             if (printQueue.front() == nullptr && printQueue.size() > 1) {
                 //                cout<<" (NL) ";
                 printQueue.push(nullptr);
+                curHeight++;
             }
         }
     }
@@ -810,16 +817,19 @@ void BPTree::printTree(Node *root) {
 }
 
 void BPTree::printNode(Node *node, string label) {
+    bool printAddress = false;
     if (node != nullptr) {
-        cout << "Print " << label << ": " << node << "[" << (node->isLeaf() ? "L" : "N") << node->getCurSize() << "/"
-             << node->getMaxSize() << " ";
+        cout << "Print " << label << ": ";
+        if (printAddress)cout << node;
+        cout << "[";
+        if (printAddress)cout << (node->isLeaf() ? "L" : "N") << node->getCurSize() << "/" << node->getMaxSize() << " ";
         int i;
         for (i = 0; i < node->getCurSize(); i++) {
-            cout << node->getChildNode(i) << " ";
+            if (printAddress)cout << node->getChildNode(i) << " ";
             cout << node->getKey(i) << " ";
         }
         if (node->isLeaf())cout << node->getChildNode(node->getMaxSize());
-        else cout << node->getChildNode(i);
+        else if (printAddress)cout << node->getChildNode(i);
         cout << "] " << endl;
     } else {
         cout << "Nothing to print." << endl;
