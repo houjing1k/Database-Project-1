@@ -96,14 +96,15 @@ int main() {
     }
     if (success) {
         cout << "Successfully added " << mappingTable.size() << " records" << endl;
-        //bpTree.deleteKey(1342);
+
+        //bpTree.deleteKey(120);
         //bpTree.printTree(bpTree.rootNode);
-        bpTree.deleteKey(120);
-        bpTree.printTree(bpTree.rootNode);
-        bpTree.deleteKey(115);
-        bpTree.printTree(bpTree.rootNode);
-        bpTree.deleteKey(652);
-        bpTree.printTree(bpTree.rootNode);
+        //bpTree.deleteKey(115);
+        //bpTree.printTree(bpTree.rootNode);
+        //bpTree.deleteKey(652);
+        //bpTree.printTree(bpTree.rootNode);
+
+        //vector<tuple<uint, void *, uint_s>> test = bpTree.searchForRange(817,817);
     } else {
         cout << "Operation aborted. Insertion error." << endl;
     }
