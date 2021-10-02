@@ -268,7 +268,7 @@ vector<tuple<uchar, string>> VirtualDisk::fetchRecord(tuple<uint, void *, uint_s
 
     uchar *blockCpy = readBlock(pBlk);
     if (DEBUG_MODE)printHex(blockCpy, blkSize, "fetched block");
-    cout << "recordID " << recordID << " recordNum " << recordNum << endl;
+    if(DEBUG_MODE)cout << "recordID " << recordID << " recordNum " << recordNum << endl;
     vector<tuple<uchar, uchar, size_t, uchar *>> recordSet = fetchRecordFromBlock(blockCpy, recordNum);
     vector<tuple<uchar, string>> data = decodeRecord(recordSet);
 
@@ -362,7 +362,7 @@ uint VirtualDisk::bytesToInt(uchar *bytes, size_t numBytes) {
     for (int i = 0; i < numBytes; i++) {
         integer = (integer << 8) | bytes[i];
     }
-    cout << integer << endl;
+//    cout << integer << endl;
     return integer;
 }
 
