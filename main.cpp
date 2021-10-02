@@ -39,7 +39,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 }
 
 
-int main() {
+int main1() {
 
     string fileDirectory = "..\\data\\data_tree_4.tsv";
 
@@ -196,7 +196,7 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
     return mappingTable;
 }
 
-int main1() {
+int main() {
     string fileDirectory = "..\\data";
     string selectedFilePath;
     size_t diskSize, blockSize;
@@ -318,6 +318,13 @@ int main1() {
                 cout << "Found " << results.size() << " records." << endl;
                 break;
             case 7: // Delete record (single)
+                cout << "Delete Key: ";
+                cin >> startKey;
+                results = bpTree.deleteKey(startKey);
+                for (int i = 0; i < results.size(); i++) {
+                    virtualDisk.deleteRecord(*results[i]);
+                }
+                cout << "Deleted " << results.size() << " records." << endl;
                 break;
             default:
                 cout << "Invalid input." << endl;
