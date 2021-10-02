@@ -26,7 +26,7 @@ public:
     BPTree(size_t blockSize);
     void insertKey(int,tuple<uint, void *, uint_s>*);
     int heightOfTree(Node* cursor);
-    void deleteKey(int);
+    vector<tuple<uint, void *, uint_s> *> deleteKey(int);
     Node* searchForNode(int key);
     vector<tuple<uint, void *, uint_s> *> searchForRange(int start, int end);
     void printTree(Node*);

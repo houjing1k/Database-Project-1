@@ -400,14 +400,15 @@ Node *BPTree::findParent(Node *ptrNode, Node *child) {
     return parent;
 }
 
-void BPTree::deleteKey(int deleteKey) {
+vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
     if (rootNode == NULL) {
-        return;
+        return{};
     } else {
         Node *ptrNode = rootNode;
         Node *parent;
         int leftSibling = 0, rightSibling = 0;
         int pointer = 0;
+
         while (!ptrNode->isLeaf()) //find the leaf node with delete key
         {
             pointer = 0;
@@ -441,10 +442,10 @@ void BPTree::deleteKey(int deleteKey) {
         }
         if (!keyExist) {
             cout << "key to be deleted cannot be found" << endl;
-            return;
+            return{};
         } else { //key exist
-            auto* deletedRecord = (vector<tuple<uint, void *, uint_s> *>*)ptrNode->getChildNode(keyPointer);
 
+            vector<tuple<uint, void *, uint_s> *> *deletedRecord = (vector<tuple<uint, void *, uint_s> *> *) ptrNode->getChildNode(keyPointer);
             ptrNode->setKey(keyPointer, NULL); //delete key
             ptrNode->decCurSize();
             ptrNode->setChildNode(keyPointer, nullptr);
@@ -462,7 +463,7 @@ void BPTree::deleteKey(int deleteKey) {
                     // TODO update tree
                     updateTreeAftDelete(deleteKey, ptrNode->getKey(0));
                 }
-                return;
+                return *deletedRecord;
             }
                 //CASE 2 borrow from sibling node
             else {
@@ -508,7 +509,7 @@ void BPTree::deleteKey(int deleteKey) {
                         cout << "before update " << ptrNode->getKey(0) << endl;
                         //TODO update tree function
                         updateTreeAftDelete(deleteKey, ptrNode->getKey(0));
-                        return;
+                        return *deletedRecord;
                     } else {
                         cannotShare = true;
                     }
@@ -542,7 +543,7 @@ void BPTree::deleteKey(int deleteKey) {
                         rightSiblingNode->decCurSize();
                         //TODO update tree function
                         updateTreeAftDelete(shareKey, rightSiblingNode->getKey(0));
-                        return;
+                        return *deletedRecord;
                     } else {
                         cannotShare = true;
                     }
@@ -569,7 +570,7 @@ void BPTree::deleteKey(int deleteKey) {
                         //leftSiblingNode->curSize += ptrNode->curSize;
                         delete ptrNode;
                         deleteInternal(parent->getKey(leftSibling), parent, leftSiblingNode);
-                        return;
+                        return *deletedRecord;
                     } else if (rightSiblingNode != NULL) {
                         //cout<<"debug cannot share right "<<ptrNode->curSize<<endl;
                         //squeeze front
