@@ -31,11 +31,11 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
         rootNode->setLeaf(true);
         rootNode->setKey(0, newKey);
         rootNode->setCurSize(1);
-        vector<tuple<uint, void *, uint_s> *> * vecKeys = new vector<tuple<uint, void *, uint_s> *>;
+        vector<tuple<uint, void *, uint_s> *> *vecKeys = new vector<tuple<uint, void *, uint_s> *>;
         vecKeys->push_back(keyPtr);
         rootNode->setChildNode(0, (Node *) vecKeys);
         if (DEBUG_MODE)cout << "New Tree " << endl;
-        if(DEBUG_MODE)printNode(rootNode,"debug");
+        if (DEBUG_MODE)printNode(rootNode, "debug");
     } else //root node not null
     {
 
@@ -77,8 +77,8 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                     else keyPointer++;
                 }
 
-                if(DEBUG_MODE)cout << "keyPointer: " << keyPointer << endl;
-                if(DEBUG_MODE)cout << "ptrNode->curSize: " << ptrNode->getCurSize() << endl;
+                if (DEBUG_MODE)cout << "keyPointer: " << keyPointer << endl;
+                if (DEBUG_MODE)cout << "ptrNode->curSize: " << ptrNode->getCurSize() << endl;
 
                 for (int j = ptrNode->getCurSize(); j > keyPointer; j--) { //insert new key
                     //move all keys back by 1
@@ -86,7 +86,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                     ptrNode->setChildNode(j, ptrNode->getChildNode(j - 1));
                 }
                 ptrNode->setKey(keyPointer, newKey);
-                vector<tuple<uint, void *, uint_s> *> * vecKeys = new vector<tuple<uint, void *, uint_s> *>;
+                vector<tuple<uint, void *, uint_s> *> *vecKeys = new vector<tuple<uint, void *, uint_s> *>;
                 ptrNode->setChildNode(keyPointer, (Node *) vecKeys);
                 ptrNode->incCurSize();
 
@@ -98,7 +98,7 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                 newLeaf->setLeaf(true);
                 Node *tempNode = new Node(nodeSize + 1);
                 tempNode->setCurSize(0);
-                vector<tuple<uint, void *, uint_s> *> * vecKeys = new vector<tuple<uint, void *, uint_s> *>;
+                vector<tuple<uint, void *, uint_s> *> *vecKeys = new vector<tuple<uint, void *, uint_s> *>;
                 vecKeys->push_back(keyPtr);
 
                 int keyCursor = 0;
@@ -116,53 +116,53 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                     if (keyCursor != i) {
                         tempNode->setKey(i, ptrNode->getKey(j));
                         tempNode->setChildNode(i, ptrNode->getChildNode(j));
-                        if(DEBUG_MODE)cout << "add " << ptrNode->getKey(j) << endl;
+                        if (DEBUG_MODE)cout << "add " << ptrNode->getKey(j) << endl;
                         j++;
                     } else {
                         tempNode->setKey(i, newKey);
                         tempNode->setChildNode(i, (Node *) vecKeys);
-                        if(DEBUG_MODE)cout << "add new " << newKey << endl;
+                        if (DEBUG_MODE)cout << "add new " << newKey << endl;
                     }
                     tempNode->incCurSize();
                 }
                 tempNode->setChildNode(nodeSize + 1, ptrNode->getChildNode(nodeSize));
 
-                if(DEBUG_MODE)printNode(tempNode, "temp leaf node");
+                if (DEBUG_MODE)printNode(tempNode, "temp leaf node");
 
                 ptrNode->setCurSize(ceil((nodeSize + 1) / 2));
                 newLeaf->setCurSize(floor((nodeSize + 1) / 2));
 
-                if(DEBUG_MODE)cout << "ptrNode->curSize: " << ptrNode->getCurSize() << endl;
-                if(DEBUG_MODE)cout << "newLeaf->curSize: " << newLeaf->getCurSize() << endl;
+                if (DEBUG_MODE)cout << "ptrNode->curSize: " << ptrNode->getCurSize() << endl;
+                if (DEBUG_MODE)cout << "newLeaf->curSize: " << newLeaf->getCurSize() << endl;
 
                 for (int i = 0; i < nodeSize; i++) //copy from temp node to initial node, clearing excess keys
                 {
                     if (i < ptrNode->getCurSize()) {
-                        ptrNode->setKey(i,tempNode->getKey(i));
-                        ptrNode->setChildNode(i,tempNode->getChildNode(i));
+                        ptrNode->setKey(i, tempNode->getKey(i));
+                        ptrNode->setChildNode(i, tempNode->getChildNode(i));
                     } else {
-                        ptrNode->setKey(i,NULL);
+                        ptrNode->setKey(i, NULL);
                         ptrNode->setChildNode(i, nullptr);
                     }
                 }
                 for (int i = 0; i < newLeaf->getCurSize(); i++) //copy from temp node to new node
                 {
-                    newLeaf->setKey(i,tempNode->getKey(i + ptrNode->getCurSize()));
-                    newLeaf->setChildNode(i,tempNode->getChildNode(i + ptrNode->getCurSize()));
+                    newLeaf->setKey(i, tempNode->getKey(i + ptrNode->getCurSize()));
+                    newLeaf->setChildNode(i, tempNode->getChildNode(i + ptrNode->getCurSize()));
                 }
 
-                ptrNode->setChildNode(nodeSize,newLeaf); //set last node ptr to point to next leaf node
-                newLeaf->setChildNode(nodeSize,tempNode->getChildNode(nodeSize + 1));
+                ptrNode->setChildNode(nodeSize, newLeaf); //set last node ptr to point to next leaf node
+                newLeaf->setChildNode(nodeSize, tempNode->getChildNode(nodeSize + 1));
 
-            printNode(ptrNode, "orig leaf node");
-            printNode(newLeaf, "new leaf node");
+                printNode(ptrNode, "orig leaf node");
+                printNode(newLeaf, "new leaf node");
 
                 if (ptrNode == rootNode) {
                     Node *newRoot = new Node(nodeSize);
                     newRoot->setLeaf(false);
                     newRoot->setKey(0, newLeaf->getKey(0)); //key of new root is smallest key on right node
                     newRoot->setCurSize(1);
-                    newRoot->setChildNode(0,ptrNode); //set child pointers
+                    newRoot->setChildNode(0, ptrNode); //set child pointers
                     newRoot->setChildNode(1, newLeaf);
                     rootNode = newRoot;
                 } else {
@@ -171,6 +171,15 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
             }
         } else {//key is duplicate
             //TODO duplicate function
+            cout << "Key duplicate. Inserting to same key" << endl;
+            for (int i = 0; i < ptrNode->getCurSize(); i++) {
+                if (ptrNode->getKey(i) == newKey) {
+                    vector<tuple<uint, void *, uint_s> *> *vecKeys =
+                            (vector<tuple<uint, void *, uint_s> *> *) ptrNode->getChildNode(i);
+                    vecKeys->push_back(keyPtr);
+                    cout << "Current vector size: " << vecKeys->size() << endl;
+                }
+            }
         }
     }
 }
@@ -206,11 +215,11 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
 
         for (int j = ptrNode->getCurSize(); j > keyPointer; j--) { //insert new key
             //move all keys back by 1
-            ptrNode->setKey(j,ptrNode->getKey(j-1));
-            ptrNode->setChildNode(j+1, ptrNode->getChildNode(j));
+            ptrNode->setKey(j, ptrNode->getKey(j - 1));
+            ptrNode->setChildNode(j + 1, ptrNode->getChildNode(j));
         }
         ptrNode->setKey(keyPointer, newKey);
-        ptrNode->setChildNode(keyPointer+1, child);
+        ptrNode->setChildNode(keyPointer + 1, child);
         ptrNode->incCurSize();
 
         if (DEBUG_MODE)printNode(ptrNode, "new internal node");
@@ -239,13 +248,13 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
         {
 //            cout << "i: " << i << endl;
             if (keyCursor != i) {
-                if (i != 0)tempNode->setKey(i-1, getMinKey(ptrNode->getChildNode(j)));
-                tempNode->setChildNode(i,ptrNode->getChildNode(j));
+                if (i != 0)tempNode->setKey(i - 1, getMinKey(ptrNode->getChildNode(j)));
+                tempNode->setChildNode(i, ptrNode->getChildNode(j));
 //                cout << "insert " << ptrNode->key[j] << endl;
                 j++;
             } else {
-                if (i != 0) tempNode->setKey(i - 1,newKey);
-                tempNode->setChildNode(i,child);
+                if (i != 0) tempNode->setKey(i - 1, newKey);
+                tempNode->setChildNode(i, child);
 //                cout << "insert new " << newKey << endl;
             }
             if (i != nodeSize + 1) tempNode->incCurSize();
@@ -255,7 +264,7 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
 //        printNode(tempNode, "temp node");
 
         ptrNode->setCurSize(ceil((float) nodeSize / 2));
-        newNode->setCurSize(floor((float) nodeSize / 2)) ;
+        newNode->setCurSize(floor((float) nodeSize / 2));
         //ptrNode->childNode[nodeSize] = newLeaf; //set last node ptr to point to next leaf node
         //newLeaf->childNode[nodeSize] = ptrNode->childNode[nodeSize];
 
@@ -264,18 +273,18 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
         for (int i = 0; i < nodeSize; i++) //copy from temp node to initial node, clearing excess keys
         {
             if (i < ptrNode->getCurSize() + 1) {
-                if (i < ptrNode->getCurSize()) ptrNode->setKey(i,tempNode->getKey(i));
-                ptrNode->setChildNode(i,tempNode->getChildNode(i));
+                if (i < ptrNode->getCurSize()) ptrNode->setKey(i, tempNode->getKey(i));
+                ptrNode->setChildNode(i, tempNode->getChildNode(i));
             } else {
-                if (i < ptrNode->getCurSize()) ptrNode->setKey(i,NULL);
+                if (i < ptrNode->getCurSize()) ptrNode->setKey(i, NULL);
                 ptrNode->setChildNode(i, nullptr);
             }
         }
         for (int i = 0; i < newNode->getCurSize() + 1; i++) //copy from temp node to new node
         {
             if (i < newNode->getCurSize())
-                newNode->setKey(i,tempNode->getKey(i + ptrNode->getCurSize() + 1));
-            newNode->setChildNode(i,tempNode->getChildNode(i + ptrNode->getCurSize() + 1));
+                newNode->setKey(i, tempNode->getKey(i + ptrNode->getCurSize() + 1));
+            newNode->setChildNode(i, tempNode->getChildNode(i + ptrNode->getCurSize() + 1));
         }
 
 //        printNode(ptrNode, "ptr internal node");
@@ -284,10 +293,10 @@ void BPTree::insertInternal(int newKey, Node *ptrNode, Node *child) {
         if (ptrNode == rootNode) {
             Node *newRoot = new Node(nodeSize);
             newRoot->setLeaf(false);
-            newRoot->setKey(0,getMinKey(newNode)); //key of new root is smallest key on right node
+            newRoot->setKey(0, getMinKey(newNode)); //key of new root is smallest key on right node
             newRoot->setCurSize(1);
-            newRoot->setChildNode(0,ptrNode); //set child pointers
-            newRoot->setChildNode(1,newNode);
+            newRoot->setChildNode(0, ptrNode); //set child pointers
+            newRoot->setChildNode(1, newNode);
             rootNode = newRoot;
         } else {
             Node *parent = findParent(rootNode, ptrNode);
@@ -345,22 +354,21 @@ vector<vector<tuple<uint, void *, uint_s> *>> BPTree::searchForRange(int start, 
     int cursorKey = startKeyPos;
     while (searchNode->getKey(cursorKey) <= end) //find all keys in range
     {
-        printNode(searchNode,"search node");
-        vector<tuple<uint, void *, uint_s> *> * keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
+        printNode(searchNode, "search node");
+        vector<tuple<uint, void *, uint_s> *> *keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
                 cursorKey);
         rangeOfRecords.push_back(*keyPtr);
-        cout << "search " << searchNode->getKey(cursorKey) <<" pointer "<<cursorKey<< endl;
+        cout << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
 
         if (cursorKey == searchNode->getCurSize() - 1) //if reach last key in node, jump to next node
         {
-            cout<<"in if"<<endl;
+            cout << "in if" << endl;
             searchNode = searchNode->getChildNode(nodeSize);
-            cout<<"Jump to Next Node "<<(void*)searchNode<<endl;
+            cout << "Jump to Next Node " << (void *) searchNode << endl;
             cursorKey = 0;
-        } else
-        {
+        } else {
             cursorKey++;
-            cout<<"in else "<<cursorKey<<endl;
+            cout << "in else " << cursorKey << endl;
         }
 
     }
@@ -431,7 +439,7 @@ void BPTree::deleteKey(int deleteKey) {
             cout << "key to be deleted cannot be found" << endl;
             return;
         } else { //key exist
-            ptrNode->setKey(keyPointer,NULL); //delete key
+            ptrNode->setKey(keyPointer, NULL); //delete key
             ptrNode->decCurSize();
             ptrNode->setChildNode(keyPointer, nullptr);
 
@@ -461,7 +469,8 @@ void BPTree::deleteKey(int deleteKey) {
                     rightSiblingNode = parent->getChildNode(rightSibling);
                 cout << "debug " << leftSibling << " " << parent->getCurSize() + 1 << " " << rightSibling << endl;
                 if (leftSiblingNode != nullptr) {
-                    cout << "debugLSN " << leftSiblingNode->getCurSize() - 1 << " vs " << floor((nodeSize + 1) / 2) << endl;
+                    cout << "debugLSN " << leftSiblingNode->getCurSize() - 1 << " vs " << floor((nodeSize + 1) / 2)
+                         << endl;
                     if (leftSiblingNode->getCurSize() - 1 >= floor((nodeSize + 1) / 2)) //if left sibling can share keys
                     {
                         cout << "debug in left if" << endl;
@@ -509,7 +518,7 @@ void BPTree::deleteKey(int deleteKey) {
                         {
                             if (ptrNode->getKey(i) == NULL) {
                                 for (int j = i; j < nodeSize - 1; j--) {
-                                    ptrNode->setKey(j,ptrNode->getKey(j + 1));
+                                    ptrNode->setKey(j, ptrNode->getKey(j + 1));
                                     ptrNode->setChildNode(j, ptrNode->getChildNode(j + 1));
                                 }
                                 break;
@@ -521,8 +530,8 @@ void BPTree::deleteKey(int deleteKey) {
                         ptrNode->incCurSize();
                         //delete shared key from sibling
                         for (int i = 0; i < rightSiblingNode->getCurSize(); i++) {
-                            rightSiblingNode->setKey(i,rightSiblingNode->getKey(i + 1));
-                            rightSiblingNode->setChildNode(i,rightSiblingNode->getChildNode(i + 1));
+                            rightSiblingNode->setKey(i, rightSiblingNode->getKey(i + 1));
+                            rightSiblingNode->setChildNode(i, rightSiblingNode->getChildNode(i + 1));
                         }
                         rightSiblingNode->decCurSize();
                         //TODO update tree function
@@ -550,7 +559,7 @@ void BPTree::deleteKey(int deleteKey) {
                         }
                         //printNode(leftSiblingNode,"hello");
                         //shift last ptr over to left sibling node
-                        leftSiblingNode->setChildNode(nodeSize,ptrNode->getChildNode(nodeSize));
+                        leftSiblingNode->setChildNode(nodeSize, ptrNode->getChildNode(nodeSize));
                         //leftSiblingNode->curSize += ptrNode->curSize;
                         delete ptrNode;
                         deleteInternal(parent->getKey(leftSibling), parent, leftSiblingNode);
@@ -669,7 +678,7 @@ void BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
                     //delete shared key from sibling
                     for (int i = 0; i < rightSiblingNode->getCurSize(); i++) {
                         rightSiblingNode->setKey(i, rightSiblingNode->getKey(i + 1));
-                        rightSiblingNode->setChildNode(i,rightSiblingNode->getChildNode(i + 1));
+                        rightSiblingNode->setChildNode(i, rightSiblingNode->getChildNode(i + 1));
                     }
                     rightSiblingNode->decCurSize();
                     return;

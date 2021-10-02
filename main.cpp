@@ -39,9 +39,9 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 }
 
 
-int main() {
+int main1() {
 
-    string fileDirectory = "..\\data\\data_tree_3.tsv";
+    string fileDirectory = "..\\data\\data_tree_4.tsv";
 
     // Data Format: uchar fieldID, uchar dataType, size_t dataSize
     vector<tuple<uchar, uchar, size_t>> dataFormat;
@@ -168,7 +168,7 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
         if (get<0>(dataMap) != -1) { // If insertion success
             mappingTable.push_back(dataMap); // add dataMap to mappingTable
             int key = stoi(rawData[i][2]); //define key
-//            cout << "adding bptree key: " << key << endl;
+            cout << "adding bptree key: " << key << endl;
             bpTree->insertKey(key, &mappingTable[i]);
 //            bpTree.printTree(bpTree.rootNode);
         } else {
@@ -184,7 +184,7 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
     return mappingTable;
 }
 
-int main1() {
+int main() {
     string fileDirectory = "..\\data";
     string selectedFilePath;
     size_t diskSize, blockSize;

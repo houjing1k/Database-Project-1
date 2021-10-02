@@ -179,7 +179,7 @@ VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<st
     }
     uchar record[recordSize];
     packToRecord(fields, numOfField, record);
-//    printHex(record, recordSize, "record");
+//    if(DEBUG_MODE)printHex(record, recordSize, "record");
 
     for (int i = 0; i < numOfField; i++) free(fields[i]); // Free temp calloc memory
 
@@ -223,7 +223,7 @@ VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<st
         if (DEBUG_MODE) cout << "Blk Addr: " << (void *) pBlk << endl;
         if (DEBUG_MODE) cout << "recordNum: " << recordNum << endl;
 
-        printHex(pBlk, blkSize, "After add");
+        if(DEBUG_MODE)printHex(pBlk, blkSize, "After add");
 
         curRecordID++;
         tuple<uint, void *, uint_s> recordMap = make_tuple(recordID, pBlk, recordNum);
@@ -244,10 +244,10 @@ bool VirtualDisk::deleteRecord(tuple<uint, void *, uint_s> recordDirectory) {
     uint_s recordNum = get<2>(recordDirectory);
 
     uchar *blockCpy = readBlock(pBlk);
-    printHex(blockCpy, blkSize, "before deletion");
+    if(DEBUG_MODE)printHex(blockCpy, blkSize, "before deletion");
 
     if (removeRecordFromBlock(blockCpy, recordNum)) {
-        printHex(blockCpy, blkSize, "after deletion");
+        if(DEBUG_MODE)printHex(blockCpy, blkSize, "after deletion");
         writeBlock(pBlk, blockCpy);
         return true;
     } else return false;
@@ -265,7 +265,7 @@ vector<tuple<uchar, string>> VirtualDisk::fetchRecord(tuple<uint, void *, uint_s
     uint_s recordNum = get<2>(recordDirectory);
 
     uchar *blockCpy = readBlock(pBlk);
-    printHex(blockCpy, blkSize, "fetched block");
+    if(DEBUG_MODE)printHex(blockCpy, blkSize, "fetched block");
     cout << "recordID " << recordID << " recordNum " << recordNum << endl;
     vector<tuple<uchar, uchar, size_t, uchar *>> recordSet = fetchRecordFromBlock(blockCpy, recordNum);
     vector<tuple<uchar, string>> data = decodeRecord(recordSet);
@@ -355,7 +355,7 @@ float VirtualDisk::bytesToFloat(uchar *bytes) {
  * @return decoded integer
  */
 uint VirtualDisk::bytesToInt(uchar *bytes, size_t numBytes) {
-    printHex(bytes, numBytes, "int");
+    if(DEBUG_MODE)printHex(bytes, numBytes, "int");
     uint integer = 0;
     for (int i = 0; i < numBytes; i++) {
         integer = (integer << 8) | bytes[i];
@@ -543,7 +543,7 @@ vector<tuple<uchar, uchar, size_t, uchar *>> VirtualDisk::fetchRecordFromBlock(u
     uchar recordBytes[recordSize];
     memcpy(recordBytes, targetBlock + startOffset, recordSize);
 
-    printHex(recordBytes,recordSize,"recordBytes");
+    if(DEBUG_MODE)printHex(recordBytes,recordSize,"recordBytes");
 
     uint numFields = recordBytes[0];
     uchar *pData = recordBytes + 1;
@@ -570,7 +570,6 @@ size_t VirtualDisk::getBlockSize() {
  * Function to print memory address range in formatted hex
  */
 void VirtualDisk::printHex(unsigned char *target, size_t size, string label) {
-    if (!DEBUG_MODE) return;
     cout << "Print " << label << " [" << static_cast<void *>(target) << "] :";
     for (int i = 0; i < size; ++i) {
         if (i % 20 == 0) cout << endl;
