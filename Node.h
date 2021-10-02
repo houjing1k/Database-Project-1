@@ -4,32 +4,47 @@
 
 #ifndef DATABASE_NODE_H
 #define DATABASE_NODE_H
+
 #include <tuple>
+
 typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 using namespace std;
 
-class Node
-{
+class Node {
 public:
-    bool leaf;
-    int *key;
-    int curSize;
-    int maxSize;
-    Node **childNode; //ptr to next node
-
-//    tuple<uint, void *, uint_s> *keyPtr = (tuple<uint, void *, uint_s>*) childNode;
-//    childNode[i] =(Node*) keyPtr;
-//    friend class BTree;
+    uchar *nodeData;
 
 public:
-    Node(int nodeSize)
-    {
-        maxSize = nodeSize;
-        key = new int[maxSize];
-        childNode = new Node * [maxSize + 1];
-    }
+    Node(size_t);
+
+    Node(int);
+
+    bool isLeaf();
+
+    void setLeaf(bool);
+
+    uint_s getMaxSize();
+
+    uint_s getCurSize();
+
+    void incCurSize();
+    void decCurSize();
+
+    void setCurSize(uint_s);
+
+    uint getKey(uint index);
+
+    void setKey(uint index, uint key);
+
+    Node *getChildNode(uint index);
+
+    void setChildNode(uint index, Node *childNode);
+
+private:
+    void setMaxSize(uint_s);
+
 };
 
 #endif //DATABASE_NODE_H

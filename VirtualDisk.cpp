@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
-const bool DEBUG_MODE = true;
+const bool DEBUG_MODE = false;
 
 using namespace std;
 
@@ -560,6 +560,10 @@ vector<tuple<uchar, uchar, size_t, uchar *>> VirtualDisk::fetchRecordFromBlock(u
         pData += dataSize;
     }
     return recordSet;
+}
+
+size_t VirtualDisk::getBlockSize() {
+    return blkSize;
 }
 
 /**

@@ -36,6 +36,8 @@ private:
 public:
     VirtualDisk(uint diskSize, uint blockSize, float blkHeaderRatio);
 
+    ~VirtualDisk();
+
     tuple<uint, void *, uint_s>
     addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<string> data);
 
@@ -45,7 +47,9 @@ public:
 
     void reportStats();
 
-    ~VirtualDisk();
+    size_t getBlockSize();
+
+    void printHex(uchar *target, size_t size, string label);
 
 private:
     int allocBlk();
@@ -79,8 +83,6 @@ private:
     bool removeRecordFromBlock(uchar *targetBlock, uint recordNum);
 
     vector<tuple<uchar, string>> decodeRecord(vector<tuple<uchar, uchar, size_t, uchar *>> recordSet);
-
-    void printHex(uchar *target, size_t size, string label);
 
 };
 

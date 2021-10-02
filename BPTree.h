@@ -5,7 +5,7 @@
 #ifndef DATABASE_BPTREE_H
 #define DATABASE_BPTREE_H
 #include "Node.h"
-#include "NodeF.h"
+#include "Node.h"
 #include<vector>
 
 typedef unsigned char uchar;
@@ -17,13 +17,13 @@ class BPTree
 {
 private:
     int nodeSize;
+    size_t blockSize;
 
 public :
     Node* rootNode;
 
 public:
-    BPTree(int nodeSize);
-    Node* newNode(size_t nodeSize);
+    BPTree(size_t blockSize);
     void insertKey(int,tuple<uint, void *, uint_s>*);
     int heightOfTree(Node* cursor);
     void deleteKey(int);

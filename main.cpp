@@ -12,7 +12,7 @@
 #include <ctime>
 #include "VirtualDisk.h"
 #include "BPTree.h"
-#include "NodeF.h"
+#include "Node.h"
 #include <filesystem>
 
 
@@ -39,9 +39,9 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 }
 
 
-int main1() {
+int main() {
 
-    string fileDirectory = "..\\data\\data_tree_4.tsv";
+    string fileDirectory = "..\\data\\data_tree_3.tsv";
 
     // Data Format: uchar fieldID, uchar dataType, size_t dataSize
     vector<tuple<uchar, uchar, size_t>> dataFormat;
@@ -56,7 +56,7 @@ int main1() {
     VirtualDisk virtualDisk(50000000, 100, 0.20);
 
     // Create B+Tree Index of node size 3
-    BPTree bpTree(3);
+    BPTree bpTree(100);
 
     // Add datasets to database
     cout << "Adding " << rawData.size() << " records to database..." << endl;
@@ -184,14 +184,14 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
     return mappingTable;
 }
 
-int main() {
+int main1() {
     string fileDirectory = "..\\data";
     string selectedFilePath;
     size_t diskSize, blockSize;
     float blkHeaderRatio = 0.20;
 
     size_t blkSize = 100;
-    NodeF* n1 = new NodeF(blkSize);
+    Node* n1 = new Node(blkSize);
     n1->setLeaf(true);
     n1->setCurSize(3);
     n1->setChildNode(0,n1);

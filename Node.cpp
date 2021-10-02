@@ -7,7 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
-#include "NodeF.h"
+#include "Node.h"
 #include <tuple>
 
 using namespace std;
@@ -15,45 +15,57 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
-NodeF::NodeF(size_t blockSize) {
-    this->nodeData = (char *) calloc(blockSize, 1);
+const bool DEBUG_MODE = false;
+
+Node::Node(size_t blockSize) {
+    this->nodeData = (uchar *) calloc(blockSize, 1);
     uint maxKeys = (blockSize - 13) / 12;
     setMaxSize(maxKeys);
+    if(DEBUG_MODE)cout<<"New node with block size "<<blockSize<<", maxKeys "<<maxKeys<<endl;
 }
 
-NodeF::NodeF(int maxKeys) {
+Node::Node(int maxKeys) {
     uint blockSize = (maxKeys * 12) + 13;
-    this->nodeData = (char *) calloc(blockSize, 1);
+    this->nodeData = (uchar *) calloc(blockSize, 1);
     setMaxSize(maxKeys);
+    if(DEBUG_MODE)cout<<"New node with maxKeys "<<maxKeys<<", block size "<<blockSize<<endl;
 }
 
-bool NodeF::isLeaf() {
+bool Node::isLeaf() {
     return nodeData[0];
 }
 
-void NodeF::setLeaf(bool isLeaf) {
+void Node::setLeaf(bool isLeaf) {
     nodeData[0] = isLeaf;
 }
 
-uint_s NodeF::getCurSize() {
+uint_s Node::getCurSize() {
     return (nodeData[1] << 8) | nodeData[2];
 }
 
-void NodeF::setCurSize(uint_s curSize) {
+void Node::setCurSize(uint_s curSize) {
     nodeData[1] = curSize >> 8 & 0xFF;
     nodeData[2] = curSize & 0xFF;
 }
 
-uint_s NodeF::getMaxSize() {
+void Node::incCurSize(){
+    setCurSize(getCurSize()+1);
+}
+
+void Node::decCurSize(){
+    setCurSize(getCurSize()-1);
+}
+
+uint_s Node::getMaxSize() {
     return (nodeData[3] << 8) | nodeData[4];
 }
 
-void NodeF::setMaxSize(uint_s maxSize) {
+void Node::setMaxSize(uint_s maxSize) {
     nodeData[3] = maxSize >> 8 & 0xFF;
     nodeData[4] = maxSize & 0xFF;
 }
 
-uint NodeF::getKey(uint index) {
+uint Node::getKey(uint index) {
     if (index > getMaxSize() - 1) return NULL;
     uint numBytes = 4;
     uint offset = 5 + (index * numBytes);
@@ -64,7 +76,7 @@ uint NodeF::getKey(uint index) {
     return key;
 }
 
-void NodeF::setKey(uint index, uint key) {
+void Node::setKey(uint index, uint key) {
     if (index > getMaxSize() - 1) return;
     uint numBytes = 4;
     uint offset = 5 + (index * numBytes);
@@ -73,7 +85,7 @@ void NodeF::setKey(uint index, uint key) {
     }
 }
 
-NodeF *NodeF::getChildNode(uint index) {
+Node *Node::getChildNode(uint index) {
     if (index > getMaxSize()) return NULL;
     uint numBytes = 8;
     uint offset = 5 + (getMaxSize() * 4) + (index * numBytes);
@@ -81,10 +93,10 @@ NodeF *NodeF::getChildNode(uint index) {
     for (int i = 0; i < numBytes; i++) {
         address = (address << 8) | nodeData[offset + i];
     }
-    return (NodeF *) address;
+    return (Node *) address;
 }
 
-void NodeF::setChildNode(uint index, NodeF *childNode) {
+void Node::setChildNode(uint index, Node *childNode) {
     if (index > getMaxSize()) return;
     uint numBytes = 8;
     uint offset = 5 + (getMaxSize() * 4) + (index * numBytes);
