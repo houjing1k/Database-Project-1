@@ -149,7 +149,7 @@ uchar *VirtualDisk::readBlock(uchar *pBlk) {
  * @return status of block de-allocation
  */
 // Add record to database. Returns a tuple <recordID, pBlk, recordNum>.
-tuple<uint, void *, uint_s>*
+tuple<uint, void *, uint_s> *
 VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<string> data) {
     if (DEBUG_MODE) cout << "Add Record" << endl;
 
@@ -250,6 +250,7 @@ bool VirtualDisk::deleteRecord(tuple<uint, void *, uint_s> recordDirectory) {
     if (removeRecordFromBlock(blockCpy, recordNum)) {
         if (DEBUG_MODE)printHex(blockCpy, blkSize, "after deletion");
         writeBlock(pBlk, blockCpy);
+        cout << "Removed recordID " << recordID << " from block " << (void *) pBlk << endl;
         return true;
     } else return false;
 }
@@ -571,7 +572,7 @@ size_t VirtualDisk::getBlockSize() {
  * Function to print memory address range in formatted hex
  */
 void VirtualDisk::printHex(unsigned char *target, size_t size, string label) {
-    cout << "Print " << label << " [" << static_cast<void *>(target) << "] :";
+    cout << "Print " << label << " [" << (void*)target << "] :";
     for (int i = 0; i < size; ++i) {
         if (i % 20 == 0) cout << endl;
         printf("%02x ", *(target + i));

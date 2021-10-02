@@ -29,7 +29,7 @@ public:
     vector<tuple<uint, void *, uint_s> *> deleteKey(int);
     Node* searchForNode(int key);
     vector<tuple<uint, void *, uint_s> *> searchForRange(int start, int end);
-    void printTree(Node*);
+    void printTree(Node*,uint);
     void printNode(Node* node, string label);
     void printTreeStats();
     uint getNumOfNodes(Node *);
