@@ -550,6 +550,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                 }
                 if (cannotShare) //both left and right siblings unable to share keys
                 {
+                    int deleteNodeCount=0;
                     cout << "debug cannot share" << endl;
                     for (int i = keyPointer; i < ptrNode->getCurSize(); i++) //squeeze keys in node
                     {
@@ -569,7 +570,8 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                         leftSiblingNode->setChildNode(nodeSize, ptrNode->getChildNode(nodeSize));
                         //leftSiblingNode->curSize += ptrNode->curSize;
                         delete ptrNode;
-                        deleteInternal(parent->getKey(leftSibling), parent, leftSiblingNode);
+                        deleteNodeCount=deleteInternal(parent->getKey(leftSibling), parent, leftSiblingNode)+1;
+                        cout<<"Deleted "<<deleteNodeCount<<" number of nodes"<<endl;
                         return *deletedRecord;
                     } else if (rightSiblingNode != NULL) {
                         //cout<<"debug cannot share right "<<ptrNode->curSize<<endl;
@@ -590,7 +592,9 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                         ptrNode->setChildNode(nodeSize, rightSiblingNode->getChildNode(nodeSize));
                         //ptrNode->curSize += rightSiblingNode->curSize;
                         delete rightSiblingNode;
-                        deleteInternal(parent->getKey(rightSibling - 1), parent, ptrNode);
+                        deleteNodeCount = deleteInternal(parent->getKey(rightSibling - 1), parent, ptrNode)+1;
+                        cout<<"Deleted "<<deleteNodeCount<<" number of nodes"<<endl;
+                        return *deletedRecord;
                     }
                 }
             }
@@ -599,12 +603,12 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
     }
 }
 
-void BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
+int BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
     if (ptrNode == rootNode) {
         if (ptrNode->getCurSize() == 1) {
             rootNode = child;
             delete ptrNode;
-            return;
+            return 0;
         }
     } else {
         int keyPointer;
@@ -668,7 +672,7 @@ void BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
                     leftSiblingNode->setChildNode(leftSiblingNode->getCurSize() - 1, nullptr);
                     leftSiblingNode->decCurSize();
 
-                    return;
+                    return 0;
                 } else {
                     cannotShare = true;
                 }
@@ -688,7 +692,7 @@ void BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
                         rightSiblingNode->setChildNode(i, rightSiblingNode->getChildNode(i + 1));
                     }
                     rightSiblingNode->decCurSize();
-                    return;
+                    return 0;
                 } else {
                     cannotShare = true;
                 }
@@ -705,8 +709,8 @@ void BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
                     }
                     //leftSiblingNode->curSize += ptrNode->curSize;
                     delete ptrNode;
-                    deleteInternal(parent->getKey(leftSibling), parent, leftSiblingNode);
-                    return;
+                    return deleteInternal(parent->getKey(leftSibling), parent, leftSiblingNode)+1;
+
                 } else if (rightSiblingNode != NULL) {
                     for (int i = 0; i < rightSiblingNode->getCurSize(); i++) {
                         //transfer all keys from right sibling
@@ -716,11 +720,12 @@ void BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
                     }
                     //ptrNode->curSize += rightSiblingNode->curSize;
                     delete rightSiblingNode;
-                    deleteInternal(parent->getKey(rightSibling - 1), parent, ptrNode);
-                    return;
+                    return deleteInternal(parent->getKey(rightSibling - 1), parent, ptrNode)+1;
+
                 }
             }
         }
+        return 0;
     }
 }
 
