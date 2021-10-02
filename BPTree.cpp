@@ -339,6 +339,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end)
     Node *searchNode;
     searchNode = searchForNode(start);
     cout << searchNode->getKey(0) << endl;
+    int nodeAccessed = 1;
     if (searchNode == nullptr)
         return {};
     vector<tuple<uint, void *, uint_s> *> rangeOfRecords;
@@ -350,32 +351,36 @@ vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end)
             break;
         }
     }
-    cout << "debugs " << startKeyPos << endl;
+    printNode(searchNode,"Contents of Node searched");
     int cursorKey = startKeyPos;
     while (searchNode->getKey(cursorKey) <= end) //find all keys in range
     {
-        printNode(searchNode, "search node");
+
+
         if (searchNode->getKey(cursorKey) >= start) {
             vector<tuple<uint, void *, uint_s> *> *keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
                     cursorKey);
             rangeOfRecords.insert(rangeOfRecords.end(), keyPtr->begin(), keyPtr->end());
-            cout << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
+            //out << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
         }
         //rangeOfRecords.push_back(*keyPtr);
 
 
         if (cursorKey == searchNode->getCurSize() - 1) //if reach last key in node, jump to next node
         {
-            cout << "in if" << endl;
+            printNode(searchNode,"Contents of Node searched");
             searchNode = searchNode->getChildNode(nodeSize);
             cout << "Jump to Next Node " << (void *) searchNode << endl;
+            nodeAccessed++;
+
             cursorKey = 0;
         } else {
             cursorKey++;
-            cout << "in else " << cursorKey << endl;
+
         }
 
     }
+    cout<<"Total Number of Nodes Accessed is "<<nodeAccessed<<endl;
     return rangeOfRecords;
 }
 
@@ -464,6 +469,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                     // TODO update tree
                     updateTreeAftDelete(deleteKey, ptrNode->getKey(0));
                 }
+                cout<<"Deleted 0 number of nodes"<<endl;
                 return *deletedRecord;
             }
                 //CASE 2 borrow from sibling node
@@ -510,6 +516,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                         cout << "before update " << ptrNode->getKey(0) << endl;
                         //TODO update tree function
                         updateTreeAftDelete(deleteKey, ptrNode->getKey(0));
+                        cout<<"Deleted 0 number of nodes"<<endl;
                         return *deletedRecord;
                     } else {
                         cannotShare = true;
@@ -544,6 +551,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                         rightSiblingNode->decCurSize();
                         //TODO update tree function
                         updateTreeAftDelete(shareKey, rightSiblingNode->getKey(0));
+                        cout<<"Deleted 0 number of nodes"<<endl;
                         return *deletedRecord;
                     } else {
                         cannotShare = true;
@@ -734,11 +742,11 @@ void BPTree::updateTreeAftDelete(int deleteKey, int newKey) {
     Node *ptrNode = rootNode;
     bool keyFound = false;
     int pointer = 0;
-    while (!keyFound || !ptrNode->isLeaf()) {
+    while (!keyFound && !ptrNode->isLeaf()) {
         pointer = 0;
         for (int i = 0; i < ptrNode->getCurSize(); i++) //search within the node
         {
-            cout << "loop " << ptrNode->getKey(i) << " " << deleteKey << endl;
+            cout << "loop " << ptrNode->getKey(i) << " " << deleteKey << "leaf? "<<ptrNode->isLeaf()<< endl;
             if (ptrNode->getKey(i) == deleteKey) //if key found
             {
                 ptrNode->setKey(i, newKey);
