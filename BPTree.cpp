@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
-const bool DEBUG_MODE = true;
+const bool DEBUG_MODE = false;
 
 BPTree::BPTree(size_t blockSize) {
     this->nodeSize = (blockSize - 13) / 12;
@@ -335,13 +335,13 @@ Node *BPTree::searchForNode(int key) {
     }
 }
 
-vector<vector<tuple<uint, void *, uint_s> *>> BPTree::searchForRange(int start, int end) {
+vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end) {
     Node *searchNode;
     searchNode = searchForNode(start);
     cout << searchNode->getKey(0) << endl;
     if (searchNode == nullptr)
         return {};
-    vector<vector<tuple<uint, void *, uint_s> *>> rangeOfRecords;
+    vector<tuple<uint, void *, uint_s> *> rangeOfRecords;
     int startKeyPos;
     for (int i = 0; i < searchNode->getCurSize(); i++) //find position of first key >= start in node
     {
@@ -357,7 +357,8 @@ vector<vector<tuple<uint, void *, uint_s> *>> BPTree::searchForRange(int start, 
         printNode(searchNode, "search node");
         vector<tuple<uint, void *, uint_s> *> *keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
                 cursorKey);
-        rangeOfRecords.push_back(*keyPtr);
+        rangeOfRecords.insert(rangeOfRecords.end(), keyPtr->begin(), keyPtr->end());
+        //rangeOfRecords.push_back(*keyPtr);
         cout << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
 
         if (cursorKey == searchNode->getCurSize() - 1) //if reach last key in node, jump to next node

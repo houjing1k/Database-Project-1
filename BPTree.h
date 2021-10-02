@@ -28,7 +28,7 @@ public:
     int heightOfTree(Node* cursor);
     void deleteKey(int);
     Node* searchForNode(int key);
-    vector<vector<tuple<uint, void *, uint_s> *>> searchForRange(int start, int end);
+    vector<tuple<uint, void *, uint_s> *> searchForRange(int start, int end);
     void printTree(Node*);
     void printNode(Node* node, string label);
     void printTreeStats();
