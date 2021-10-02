@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
-const bool DEBUG_MODE = false;
+const bool DEBUG_MODE = true;
 
 using namespace std;
 

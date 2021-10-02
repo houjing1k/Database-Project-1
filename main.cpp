@@ -12,6 +12,7 @@
 #include <ctime>
 #include "VirtualDisk.h"
 #include "BPTree.h"
+#include "NodeF.h"
 #include <filesystem>
 
 
@@ -38,7 +39,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 }
 
 
-int main() {
+int main1() {
 
     string fileDirectory = "..\\data\\data_tree_4.tsv";
 
@@ -142,19 +143,21 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
     vector<tuple<uint, void *, uint_s>> mappingTable;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now(); // Start timer
     std::chrono::steady_clock::time_point end;
-    uint totalTime = 0;
+    unsigned long long totalTime = 0;
     for (int i = 0; i < rawData.size(); i++) {
         // Report Stats
         if (i != 0 && i % reportInterval == 0) {
             end = std::chrono::steady_clock::now(); // Stop timer
-            uint elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
+            uint elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
             totalTime += elapsedTime;
-            uint etc = totalTime / (i / reportInterval) * (rawData.size() - (i + 1)) / reportInterval / 60;
+            float etc =
+                    (float) totalTime / (i / reportInterval) * (rawData.size() - (i + 1)) / reportInterval / 60 / 1000;
 //            system("cls");
-            cout << "Added [" << i << "] records. [" << rawData.size() - i << "] records left. \t[" << fixed
+            cout << "Added [" << i << "] records. [" << rawData.size() - i << "] records remaining. \t[" << fixed
                  << setprecision(2)
                  << (float) i * 100 / (float) rawData.size() << "%]" << endl;
-            cout << "Elapsed time: " << elapsedTime << "[s]. ETC: " << etc << "[min]" << std::endl;
+            cout << fixed << setprecision(2) << "Elapsed time: " << (float) elapsedTime / 1000 << "[s]. ETC: "
+                 << setprecision(0) << floor(etc) << "[min] " << (etc - floor(etc)) * 60 << "[s]" << std::endl;
             begin = std::chrono::steady_clock::now(); // Start timer
         }
 
@@ -180,11 +183,35 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
     return mappingTable;
 }
 
-int main1() {
+int main() {
     string fileDirectory = "..\\data";
     string selectedFilePath;
-    int diskSize, blockSize;
+    size_t diskSize, blockSize;
     float blkHeaderRatio = 0.20;
+
+    size_t blkSize = 100;
+    NodeF* n1 = new NodeF(blkSize);
+    n1->setLeaf(true);
+    n1->setCurSize(3);
+    n1->setChildNode(0,n1);
+    n1->setChildNode(1,n1);
+    n1->setChildNode(2,n1);
+    n1->setChildNode(3,n1);
+    n1->setKey(0, 1234);
+    n1->setKey(1, 1111);
+    n1->setKey(2, 555555);
+
+    cout<<"n1 range: "<<(void*) n1<<" - "<<(void*)(n1+1) <<endl;
+    cout<<"leaf: "<<(n1->isLeaf())<<endl;
+    cout<<"curSize: "<<(n1->getCurSize())<<endl;
+    cout<<"maxSize: "<<(n1->getMaxSize())<<endl;
+    cout<<"key[0]: "<<(n1->getKey(0))<<endl;
+    cout<<"key[1]: "<<(n1->getKey(1))<<endl;
+    cout<<"key[2]: "<<(n1->getKey(2))<<endl;
+    cout<<"childNode[0]: "<<(n1->getChildNode(0))<<endl;
+    cout<<"childNode[1]: "<<(n1->getChildNode(1))<<endl;
+    cout<<"childNode[2]: "<<(n1->getChildNode(2))<<endl;
+    cout<<"childNode[3]: "<<(n1->getChildNode(3))<<endl;
 
     while (selectedFilePath.empty()) {
 //        system("cls");
@@ -236,38 +263,46 @@ int main1() {
 
     while (true) {
 //        system("cls");
+        cout << "============== Database Menu ===============" << endl;
         cout << "1. Print virtual disk statistics" << endl;
-        cout << "2. Print B+Tree Index" << endl;
-        cout << "3. Fetch record (single)" << endl;
-        cout << "4. Fetch record (range)" << endl;
-        cout << "5. Delete record (single)" << endl;
+        cout << "2. Print B+Tree index statistics" << endl;
+        cout << "3. Print virtual disk data" << endl;
+        cout << "4. Print B+Tree" << endl;
+        cout << "============================================" << endl;
+        cout << "5. Fetch record (single)" << endl;
+        cout << "6. Fetch record (range)" << endl;
+        cout << "7. Delete record (single)" << endl;
+        cout << "============================================" << endl;
         cout << "0. Quit" << endl;
+        cout << "============================================" << endl;
         int selection;
         cin >> selection;
         if (selection == 0) break;
         switch (selection) {
-            case 1:
+            case 1: // Print virtual disk statistics
                 virtualDisk.reportStats();
                 break;
-            case 2:
+            case 2: // Print B+Tree index statistics
                 bpTree.printTree(bpTree.rootNode);
                 break;
-            case 3:
-                // Fetch record (single)
+            case 3: // Print virtual disk data
                 break;
-            case 4:
-                // Fetch record (range)
+            case 4: // Print B+Tree
                 break;
-            case 5:
-                // Delete record
+            case 5: // Fetch record (single)
+                break;
+            case 6: // Fetch record (range)
+                break;
+            case 7: // Delete record (single)
                 break;
             default:
                 cout << "Invalid input." << endl;
         }
         system("pause");
+        cout<<endl;
     }
 
-    system("pause");
+//    system("pause");
     return 0;
 
 }
