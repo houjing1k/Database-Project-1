@@ -39,7 +39,7 @@ vector<vector<string>> readDatafile(string fileDirectory) {
 }
 
 
-int main1() {
+int main() {
 
     string fileDirectory = "..\\data\\data_tree_4.tsv";
 
@@ -105,7 +105,7 @@ int main1() {
         //bpTree.deleteKey(652);
         //bpTree.printTree(bpTree.rootNode);
 
-        vector<vector<tuple<uint, void *, uint_s> *>> test = bpTree.searchForRange(1342,5000);
+        vector<tuple<uint, void *, uint_s> *> test = bpTree.searchForRange(1341,5000);
     } else {
         cout << "Operation aborted. Insertion error." << endl;
     }
@@ -184,7 +184,7 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
     return mappingTable;
 }
 
-int main() {
+int main1() {
     string fileDirectory = "..\\data";
     string selectedFilePath;
     size_t diskSize, blockSize;
@@ -255,7 +255,7 @@ int main() {
         int selection;
         cin >> selection;
         if (selection == 0) break;
-        vector<vector<tuple<uint, void *, uint_s> *>> results;
+        vector<tuple<uint, void *, uint_s> *> results;
         switch (selection) {
             case 1: // Print virtual disk statistics
                 virtualDisk.reportStats();
