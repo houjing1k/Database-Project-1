@@ -38,7 +38,7 @@ public:
 
     ~VirtualDisk();
 
-    tuple<uint, void *, uint_s>
+    tuple<uint, void *, uint_s>*
     addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<string> data);
 
     bool deleteRecord(tuple<uint, void *, uint_s> recordDirectory);
@@ -50,6 +50,8 @@ public:
     size_t getBlockSize();
 
     void printHex(uchar *target, size_t size, string label);
+
+    void printAllocatedBlocks();
 
 private:
     int allocBlk();

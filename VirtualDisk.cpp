@@ -149,7 +149,7 @@ uchar *VirtualDisk::readBlock(uchar *pBlk) {
  * @return status of block de-allocation
  */
 // Add record to database. Returns a tuple <recordID, pBlk, recordNum>.
-tuple<uint, void *, uint_s>
+tuple<uint, void *, uint_s>*
 VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<string> data) {
     if (DEBUG_MODE) cout << "Add Record" << endl;
 
@@ -187,7 +187,7 @@ VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<st
     if (numAllocBlk < 1) {
         if (DEBUG_MODE) cout << "No allocated blocks." << endl;
         blkOffset = allocBlk(); // No allocated blocks
-        if (blkOffset == -1)return make_tuple(-1, nullptr, -1); //Allocation Failed
+        if (blkOffset == -1)return nullptr; //Allocation Failed
     } else {
         for (int i = 0; i < numTotalBlk; i++) {
             int availSpace = (*(pDisk + (i * blkSize) + 1) << 8) | (*(pDisk + (i * blkSize) + 2));
@@ -203,7 +203,7 @@ VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<st
         if (blkOffset == -1) {
             if (DEBUG_MODE) cout << "No space in all allocated blocks." << endl;
             blkOffset = allocBlk(); // No space in all allocated blocks
-            if (blkOffset == -1)return make_tuple(-1, nullptr, -1); //Allocation Failed
+            if (blkOffset == -1)return nullptr; //Allocation Failed
         }
     }
 
@@ -217,16 +217,17 @@ VirtualDisk::addRecord(vector<tuple<uchar, uchar, size_t>> dataFormat, vector<st
     }
     if (recordNum == -1) { // Insertion Failed
         if (DEBUG_MODE) cout << "Insertion Failed" << endl;
-        return make_tuple(-1, nullptr, -1);
+        return nullptr;
     } else {
         if (DEBUG_MODE) cout << "recordID: " << recordID << endl;
         if (DEBUG_MODE) cout << "Blk Addr: " << (void *) pBlk << endl;
         if (DEBUG_MODE) cout << "recordNum: " << recordNum << endl;
 
-        if(DEBUG_MODE)printHex(pBlk, blkSize, "After add");
+        if (DEBUG_MODE)printHex(pBlk, blkSize, "After add");
 
         curRecordID++;
-        tuple<uint, void *, uint_s> recordMap = make_tuple(recordID, pBlk, recordNum);
+        tuple<uint, void *, uint_s> *recordMap = new tuple<uint, void *, uint_s>;
+        *recordMap = make_tuple(recordID, pBlk, recordNum);
         return recordMap;
     }
 }
@@ -244,10 +245,10 @@ bool VirtualDisk::deleteRecord(tuple<uint, void *, uint_s> recordDirectory) {
     uint_s recordNum = get<2>(recordDirectory);
 
     uchar *blockCpy = readBlock(pBlk);
-    if(DEBUG_MODE)printHex(blockCpy, blkSize, "before deletion");
+    if (DEBUG_MODE)printHex(blockCpy, blkSize, "before deletion");
 
     if (removeRecordFromBlock(blockCpy, recordNum)) {
-        if(DEBUG_MODE)printHex(blockCpy, blkSize, "after deletion");
+        if (DEBUG_MODE)printHex(blockCpy, blkSize, "after deletion");
         writeBlock(pBlk, blockCpy);
         return true;
     } else return false;
@@ -265,7 +266,7 @@ vector<tuple<uchar, string>> VirtualDisk::fetchRecord(tuple<uint, void *, uint_s
     uint_s recordNum = get<2>(recordDirectory);
 
     uchar *blockCpy = readBlock(pBlk);
-    if(DEBUG_MODE)printHex(blockCpy, blkSize, "fetched block");
+    if (DEBUG_MODE)printHex(blockCpy, blkSize, "fetched block");
     cout << "recordID " << recordID << " recordNum " << recordNum << endl;
     vector<tuple<uchar, uchar, size_t, uchar *>> recordSet = fetchRecordFromBlock(blockCpy, recordNum);
     vector<tuple<uchar, string>> data = decodeRecord(recordSet);
@@ -312,7 +313,7 @@ vector<tuple<uchar, string>> VirtualDisk::decodeRecord(vector<tuple<uchar, uchar
  */
 void VirtualDisk::intToBytes(uint integer, uchar *bytes, size_t numBytes) {
     for (int i = numBytes - 1; i >= 0; i--) {
-        bytes[i] = (integer >> ((numBytes - 1 -i) * 8)) & 0x00FF;
+        bytes[i] = (integer >> ((numBytes - 1 - i) * 8)) & 0x00FF;
     }
 //    cout << "int: " << integer << endl;
 //    printHex(bytes, numBytes, "intBytes");
@@ -355,7 +356,7 @@ float VirtualDisk::bytesToFloat(uchar *bytes) {
  * @return decoded integer
  */
 uint VirtualDisk::bytesToInt(uchar *bytes, size_t numBytes) {
-    if(DEBUG_MODE)printHex(bytes, numBytes, "int");
+    if (DEBUG_MODE)printHex(bytes, numBytes, "int");
     uint integer = 0;
     for (int i = 0; i < numBytes; i++) {
         integer = (integer << 8) | bytes[i];
@@ -533,7 +534,7 @@ vector<tuple<uchar, uchar, size_t, uchar *>> VirtualDisk::fetchRecordFromBlock(u
     uchar *pHead = targetBlock + 3 + ((recordNum - 1) * 5);
     uint startOffset = (pHead[1] << 8) | pHead[2];
     uint endOffset = (pHead[3] << 8) | pHead[4];
-    uint recordSize = endOffset - startOffset+1;
+    uint recordSize = endOffset - startOffset + 1;
 
     if (startOffset == 0 && endOffset == 0) {
         cout << "Record not found in target block" << endl;
@@ -543,7 +544,7 @@ vector<tuple<uchar, uchar, size_t, uchar *>> VirtualDisk::fetchRecordFromBlock(u
     uchar recordBytes[recordSize];
     memcpy(recordBytes, targetBlock + startOffset, recordSize);
 
-    if(DEBUG_MODE)printHex(recordBytes,recordSize,"recordBytes");
+    if (DEBUG_MODE)printHex(recordBytes, recordSize, "recordBytes");
 
     uint numFields = recordBytes[0];
     uchar *pData = recordBytes + 1;
@@ -576,6 +577,16 @@ void VirtualDisk::printHex(unsigned char *target, size_t size, string label) {
         printf("%02x ", *(target + i));
     }
     cout << endl;
+}
+
+void VirtualDisk::printAllocatedBlocks() {
+    cout << "Printing " << numAllocBlk << " allocated blocks:" << endl;
+    for (int i = 0; i < numTotalBlk; i++) {
+        if (blkValidity[i]) {
+            printHex(pDisk + (i * blkSize), blkSize, "allocated block " + to_string(i));
+            cout << endl;
+        }
+    }
 }
 
 /**

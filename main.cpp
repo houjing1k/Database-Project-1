@@ -62,7 +62,7 @@ int main() {
     cout << "Adding " << rawData.size() << " records to database..." << endl;
     bool success = true;
     int reportInterval = 1000;
-    vector<tuple<uint, void *, uint_s>> mappingTable;
+    vector<tuple<uint, void *, uint_s>*> mappingTable;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now(); // Start timer
     std::chrono::steady_clock::time_point end;
     uint totalTime = 0;
@@ -83,12 +83,12 @@ int main() {
 
         // Add Record
         // <recordID, pBlk, recordNum>
-        tuple<uint, void *, uint_s> dataMap = virtualDisk.addRecord(dataFormat, rawData[i]);
-        if (get<0>(dataMap) != -1) { // If insertion success
+        tuple<uint, void *, uint_s>* dataMap = virtualDisk.addRecord(dataFormat, rawData[i]);
+        if (dataMap != nullptr) { // If insertion success
             mappingTable.push_back(dataMap); // add dataMap to mappingTable
             int key = stoi(rawData[i][2]); //define key
             cout << "adding bptree key: " << key << endl;
-            bpTree.insertKey(key, &mappingTable[i]);
+            bpTree.insertKey(key, mappingTable[i]);
             bpTree.printTree(bpTree.rootNode);
         } else {
             success = false;
@@ -105,7 +105,17 @@ int main() {
         //bpTree.deleteKey(652);
         //bpTree.printTree(bpTree.rootNode);
 
-        vector<tuple<uint, void *, uint_s> *> test = bpTree.searchForRange(1341,5000);
+        vector<tuple<uint, void *, uint_s> *> results = bpTree.searchForRange(1342, 5000);
+        cout << "num of results: " << results.size() << endl;
+        for (int i = 0; i < results.size(); i++) {
+            vector<tuple<uchar, string>> record = virtualDisk.fetchRecord(*results[i]);
+            string tconst = get<1>(record[0]);
+            float avgRating = stoi(get<1>(record[1]));
+            uint numVotes = stof(get<1>(record[2]));
+            cout << "tconst: " << tconst << endl;
+            cout << "avgRating: " << avgRating << endl;
+            cout << "numVotes: " << numVotes << endl;
+        }
     } else {
         cout << "Operation aborted. Insertion error." << endl;
     }
@@ -122,18 +132,18 @@ int main() {
 //    }
 
     // Delete Record
-    virtualDisk.deleteRecord(mappingTable[6]);
-    virtualDisk.deleteRecord(mappingTable[7]);
-    virtualDisk.deleteRecord(mappingTable[8]);
-
-    virtualDisk.reportStats();
+//    virtualDisk.deleteRecord(mappingTable[6]);
+//    virtualDisk.deleteRecord(mappingTable[7]);
+//    virtualDisk.deleteRecord(mappingTable[8]);
+//
+//    virtualDisk.reportStats();
 
 
     system("pause");
     return 0;
 }
 
-vector<tuple<uint, void *, uint_s>>
+vector<tuple<uint, void *, uint_s>*>
 addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size_t>> dataFormat,
                  VirtualDisk *virtualDisk, BPTree *bpTree) {
     // Add datasets to database
@@ -141,7 +151,7 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
     cout << "Adding " << rawData.size() << " records to database..." << endl;
     bool success = true;
     int reportInterval = 1000;
-    vector<tuple<uint, void *, uint_s>> mappingTable;
+    vector<tuple<uint, void *, uint_s>*> mappingTable;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now(); // Start timer
     std::chrono::steady_clock::time_point end;
     unsigned long long totalTime = 0;
@@ -164,13 +174,13 @@ addRecordsToDisk(vector<vector<string>> rawData, vector<tuple<uchar, uchar, size
 
         // Add Record
         // <recordID, pBlk, recordNum>
-        tuple<uint, void *, uint_s> dataMap = virtualDisk->addRecord(dataFormat, rawData[i]);
-        if (get<0>(dataMap) != -1) { // If insertion success
+        tuple<uint, void *, uint_s>* dataMap = virtualDisk->addRecord(dataFormat, rawData[i]);
+        if (dataMap!= nullptr) { // If insertion success
             mappingTable.push_back(dataMap); // add dataMap to mappingTable
             int key = stoi(rawData[i][2]); //define key
             cout << "adding bptree key: " << key << endl;
-            bpTree->insertKey(key, &mappingTable[i]);
-//            bpTree.printTree(bpTree.rootNode);
+            bpTree->insertKey(key, mappingTable[i]);
+            bpTree->printTree(bpTree->rootNode);
         } else {
             success = false;
             break;
@@ -236,14 +246,14 @@ int main1() {
     dataFormat.push_back(make_tuple(3, 'i', 3));
 
     // Add records to disk
-    vector<tuple<uint, void *, uint_s>> mappingTable = addRecordsToDisk(rawData, dataFormat, &virtualDisk, &bpTree);
+    vector<tuple<uint, void *, uint_s>*> mappingTable = addRecordsToDisk(rawData, dataFormat, &virtualDisk, &bpTree);
 
     while (true) {
 //        system("cls");
         cout << "============== Database Menu ===============" << endl;
         cout << "1. Print virtual disk statistics" << endl;
         cout << "2. Print B+Tree index statistics" << endl;
-        cout << "3. Print virtual disk data (TBC)" << endl;
+        cout << "3. Print virtual disk allocated blocks" << endl;
         cout << "4. Print B+Tree" << endl;
         cout << "============================================" << endl;
         cout << "5. Fetch record (single) (TBC)" << endl;
@@ -263,7 +273,8 @@ int main1() {
             case 2: // Print B+Tree index statistics
                 bpTree.printTreeStats();
                 break;
-            case 3: // Print virtual disk data
+            case 3: // Print virtual disk allocated blocks
+                virtualDisk.printAllocatedBlocks();
                 break;
             case 4: // Print B+Tree
                 bpTree.printTree(bpTree.rootNode);
@@ -278,11 +289,15 @@ int main1() {
                 uint endKey;
                 cin >> endKey;
                 results = bpTree.searchForRange(startKey, endKey);
-//                for (int i = 0; i < results.size(); i++) {
-//                    vector<tuple<uchar, string>> record = virtualDisk.fetchRecord(results[i]);
-//                    string tconst = get<1>(record[0]);
-//                    float avgRating = get<1>(record[1]);
-//                }
+                for (int i = 0; i < results.size(); i++) {
+                    vector<tuple<uchar, string>> record = virtualDisk.fetchRecord(*results[i]);
+                    string tconst = get<1>(record[0]);
+                    float avgRating = stoi(get<1>(record[1]));
+                    uint numVotes = stof(get<1>(record[2]));
+                    cout << "tconst: " << tconst << endl;
+                    cout << "avgRating: " << avgRating << endl;
+                    cout << "numVotes: " << numVotes << endl;
+                }
                 cout << "Successfully deleted " << results.size() << " records." << endl;
                 break;
             case 7: // Delete record (single)
@@ -291,7 +306,7 @@ int main1() {
                 cout << "Invalid input." << endl;
         }
         system("pause");
-        cout<<endl;
+        cout << endl;
     }
 
 //    system("pause");
