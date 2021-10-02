@@ -5,6 +5,9 @@ CMakeFiles/Database.dir/BPTree.cpp.obj: \
  ../BPTree.cpp \
  ../BPTree.h \
  ../Node.h
+CMakeFiles/Database.dir/Node.cpp.obj: \
+ ../Node.cpp \
+ ../Node.h
 CMakeFiles/Database.dir/VirtualDisk.cpp.obj: \
  ../VirtualDisk.cpp \
  ../VirtualDisk.h

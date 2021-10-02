@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/BPTree.cpp" "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/CMakeFiles/Database.dir/BPTree.cpp.obj"
+  "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/Node.cpp" "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/CMakeFiles/Database.dir/Node.cpp.obj"
   "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/VirtualDisk.cpp" "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/CMakeFiles/Database.dir/VirtualDisk.cpp.obj"
   "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/main.cpp" "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/CMakeFiles/Database.dir/main.cpp.obj"
   "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/try.cpp" "C:/Users/tay_k/OneDrive/Desktop/School/Database Principles/Database-Project-1/cmake-build-debug-mingw/CMakeFiles/Database.dir/try.cpp.obj"

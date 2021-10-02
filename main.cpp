@@ -105,7 +105,7 @@ int main() {
         //bpTree.deleteKey(652);
         //bpTree.printTree(bpTree.rootNode);
 
-        //vector<tuple<uint, void *, uint_s>> test = bpTree.searchForRange(817,817);
+        vector<vector<tuple<uint, void *, uint_s> *>> test = bpTree.searchForRange(1342,5000);
     } else {
         cout << "Operation aborted. Insertion error." << endl;
     }

@@ -31,7 +31,9 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
         rootNode->setLeaf(true);
         rootNode->setKey(0, newKey);
         rootNode->setCurSize(1);
-        rootNode->setChildNode(0, (Node *) keyPtr);
+        vector<tuple<uint, void *, uint_s> *> * vecKeys = new vector<tuple<uint, void *, uint_s> *>;
+        vecKeys->push_back(keyPtr);
+        rootNode->setChildNode(0, (Node *) vecKeys);
         if (DEBUG_MODE)cout << "New Tree " << endl;
         printNode(rootNode,"debug");
     } else //root node not null
@@ -325,13 +327,13 @@ Node *BPTree::searchForNode(int key) {
     }
 }
 
-vector<tuple<uint, void *, uint_s>> BPTree::searchForRange(int start, int end) {
+vector<vector<tuple<uint, void *, uint_s> *>> BPTree::searchForRange(int start, int end) {
     Node *searchNode;
     searchNode = searchForNode(start);
     cout << searchNode->getKey(0) << endl;
     if (searchNode == nullptr)
         return {};
-    vector<tuple<uint, void *, uint_s>> rangeOfRecords;
+    vector<vector<tuple<uint, void *, uint_s> *>> rangeOfRecords;
     int startKeyPos;
     for (int i = 0; i < searchNode->getCurSize(); i++) //find position of first key >= start in node
     {
@@ -344,16 +346,23 @@ vector<tuple<uint, void *, uint_s>> BPTree::searchForRange(int start, int end) {
     int cursorKey = startKeyPos;
     while (searchNode->getKey(cursorKey) <= end) //find all keys in range
     {
-        tuple<uint, void *, uint_s> *keyPtr = (tuple<uint, void *, uint_s> *) searchNode->getChildNode(cursorKey);
+        vector<tuple<uint, void *, uint_s> *> * keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
+                cursorKey);
         rangeOfRecords.push_back(*keyPtr);
-        cout << "search " << searchNode->getKey(cursorKey) << endl;
+        cout << "search " << searchNode->getKey(cursorKey) <<" pointer "<<cursorKey<< endl;
 
         if (cursorKey == searchNode->getCurSize() - 1) //if reach last key in node, jump to next node
         {
+            cout<<"in if"<<endl;
             searchNode = searchNode->getChildNode(nodeSize);
+            cout<<"Jump to Next Node"<<endl;
             cursorKey = 0;
         } else
+        {
             cursorKey++;
+            cout<<"in else "<<cursorKey<<endl;
+        }
+
     }
     return rangeOfRecords;
 }

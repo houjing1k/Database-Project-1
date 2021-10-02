@@ -152,6 +152,30 @@ BPTree.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/BPTree.cpp.s
 .PHONY : BPTree.cpp.s
 
+Node.obj: Node.cpp.obj
+.PHONY : Node.obj
+
+# target to build an object file
+Node.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/Node.cpp.obj
+.PHONY : Node.cpp.obj
+
+Node.i: Node.cpp.i
+.PHONY : Node.i
+
+# target to preprocess a source file
+Node.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/Node.cpp.i
+.PHONY : Node.cpp.i
+
+Node.s: Node.cpp.s
+.PHONY : Node.s
+
+# target to generate assembly for a file
+Node.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Database.dir\build.make CMakeFiles/Database.dir/Node.cpp.s
+.PHONY : Node.cpp.s
+
 VirtualDisk.obj: VirtualDisk.cpp.obj
 .PHONY : VirtualDisk.obj
 
@@ -236,6 +260,9 @@ help:
 	@echo ... BPTree.obj
 	@echo ... BPTree.i
 	@echo ... BPTree.s
+	@echo ... Node.obj
+	@echo ... Node.i
+	@echo ... Node.s
 	@echo ... VirtualDisk.obj
 	@echo ... VirtualDisk.i
 	@echo ... VirtualDisk.s
