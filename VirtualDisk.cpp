@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
-const bool DEBUG_MODE = true;
+const bool DEBUG_MODE = false;
 
 using namespace std;
 
@@ -314,8 +314,8 @@ void VirtualDisk::intToBytes(uint integer, uchar *bytes, size_t numBytes) {
     for (int i = numBytes - 1; i >= 0; i--) {
         bytes[i] = (integer >> ((numBytes - 1 -i) * 8)) & 0x00FF;
     }
-    cout << "int: " << integer << endl;
-    printHex(bytes, numBytes, "intBytes");
+//    cout << "int: " << integer << endl;
+//    printHex(bytes, numBytes, "intBytes");
 }
 
 /**
@@ -438,7 +438,7 @@ uint VirtualDisk::packToRecord(vector<uchar *> fields, uchar numFields, uchar *r
  * @param targetBlock target block
  * @param targetRecord target record to insert
  * @param recordSize size of target record
- * @return status of record insertion
+ * @return recordID of inserted record
  */
 int VirtualDisk::insertRecordToBlock(uchar *targetBlock, uchar *targetRecord, int recordSize) {
     int recordID = 0;
