@@ -356,7 +356,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end)
     int cursorKey = startKeyPos;
     while (searchNode->getKey(cursorKey) <= end) //find all keys in range
     {
-        cout << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
+        //cout << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
         if (searchNode->getKey(cursorKey) >= start) {
             vector<tuple<uint, void *, uint_s> *> *keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
                     cursorKey);
