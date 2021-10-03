@@ -486,13 +486,13 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                     leftSiblingNode = parent->getChildNode(leftSibling);
                 if (rightSibling < parent->getCurSize() + 1) //if right sibling exist
                     rightSiblingNode = parent->getChildNode(rightSibling);
-                cout << "debug " << leftSibling << " " << parent->getCurSize() + 1 << " " << rightSibling << endl;
+                if(DEBUG_MODE)cout << "debug " << leftSibling << " " << parent->getCurSize() + 1 << " " << rightSibling << endl;
                 if (leftSiblingNode != nullptr) {
-                    cout << "debugLSN " << leftSiblingNode->getCurSize() - 1 << " vs " << floor((nodeSize + 1) / 2)
+                    if(DEBUG_MODE)cout << "debugLSN " << leftSiblingNode->getCurSize() - 1 << " vs " << floor((nodeSize + 1) / 2)
                          << endl;
                     if (leftSiblingNode->getCurSize() - 1 >= floor((nodeSize + 1) / 2)) //if left sibling can share keys
                     {
-                        cout << "debug in left if" << endl;
+                        if(DEBUG_MODE)cout << "debug in left if" << endl;
 
                         int shareKey = leftSiblingNode->getKey(leftSiblingNode->getCurSize() - 1);
                         for (int i = 0;
@@ -518,7 +518,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                         leftSiblingNode->setKey(leftSiblingNode->getCurSize() - 1, NULL);
                         leftSiblingNode->setChildNode(leftSiblingNode->getCurSize() - 1, nullptr);
                         leftSiblingNode->decCurSize();
-                        cout << "before update " << ptrNode->getKey(0) << endl;
+                        if(DEBUG_MODE)cout << "before update " << ptrNode->getKey(0) << endl;
                         //TODO update tree function
                         updateTreeAftDelete(deleteKey, ptrNode->getKey(0));
                         cout<<"Deleted 0 number of nodes"<<endl;
@@ -529,7 +529,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                 }
                 if (rightSiblingNode != NULL) //if right sibling can share keys
                 {
-                    cout << "debugRN" << endl;
+                    if(DEBUG_MODE)cout << "debugRN" << endl;
                     if (rightSiblingNode->getCurSize() - 1 >= floor((nodeSize + 1) / 2)) {
                         cannotShare = false;
                         int shareKey = rightSiblingNode->getKey(0);
@@ -565,13 +565,13 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                 if (cannotShare) //both left and right siblings unable to share keys
                 {
                     int deleteNodeCount=0;
-                    cout << "debug cannot share" << endl;
+                    if(DEBUG_MODE)cout << "debug cannot share" << endl;
                     for (int i = keyPointer; i < ptrNode->getCurSize(); i++) //squeeze keys in node
                     {
                         ptrNode->setKey(i, ptrNode->getKey(i + 1));
                     }
                     if (leftSiblingNode != NULL) {
-                        cout << "debug cannot share left" << endl;
+                        if(DEBUG_MODE)cout << "debug cannot share left" << endl;
                         cout << leftSiblingNode->getKey(leftSiblingNode->getCurSize() - 1) << endl;
                         for (int i = 0; i < ptrNode->getCurSize(); i++) {
                             //transfer all keys into left sibling
@@ -585,7 +585,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                         //leftSiblingNode->curSize += ptrNode->curSize;
                         delete ptrNode;
                         deleteNodeCount=deleteInternal(parent->getKey(leftSibling), parent, leftSiblingNode)+1;
-                        cout<<"Deleted "<<deleteNodeCount<<" number of nodes"<<endl;
+                        if(DEBUG_MODE)cout<<"Deleted "<<deleteNodeCount<<" number of nodes"<<endl;
                         return *deletedRecord;
                     } else if (rightSiblingNode != NULL) {
                         //cout<<"debug cannot share right "<<ptrNode->curSize<<endl;
@@ -607,7 +607,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                         //ptrNode->curSize += rightSiblingNode->curSize;
                         delete rightSiblingNode;
                         deleteNodeCount = deleteInternal(parent->getKey(rightSibling - 1), parent, ptrNode)+1;
-                        cout<<"Deleted "<<deleteNodeCount<<" number of nodes"<<endl;
+                        if(DEBUG_MODE)cout<<"Deleted "<<deleteNodeCount<<" number of nodes"<<endl;
                         return *deletedRecord;
                     }
                 }
@@ -633,7 +633,7 @@ int BPTree::deleteInternal(int deleteKey, Node *ptrNode, Node *child) {
                 break;
             }
         }
-        cout << "parent internal keyPTR " << keyPointer << endl;
+        if(DEBUG_MODE)cout << "parent internal keyPTR " << keyPointer << endl;
         for (int i = keyPointer; i < nodeSize - 1; i++)//adjust parent(current node)
         {//shift keys and pointers (delete key)
 
@@ -751,7 +751,7 @@ void BPTree::updateTreeAftDelete(int deleteKey, int newKey) {
         pointer = 0;
         for (int i = 0; i < ptrNode->getCurSize(); i++) //search within the node
         {
-            cout << "loop " << ptrNode->getKey(i) << " " << deleteKey << "leaf? "<<ptrNode->isLeaf()<< endl;
+            if(DEBUG_MODE)cout << "loop " << ptrNode->getKey(i) << " " << deleteKey << "leaf? "<<ptrNode->isLeaf()<< endl;
             if (ptrNode->getKey(i) == deleteKey) //if key found
             {
                 ptrNode->setKey(i, newKey);
