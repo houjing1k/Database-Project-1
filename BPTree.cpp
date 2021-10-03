@@ -321,9 +321,11 @@ Node *BPTree::searchForNode(int key) {
             for (int i = 0; i < ptrNode->getCurSize(); i++) {
                 cout << "key: " << key << " nodeKey: " << ptrNode->getKey(i) << endl;
                 if (key >= ptrNode->getKey(i)) {
-                    pointer = i;
+                    //cout<<"in if"<<endl;
+                    pointer = i+1;
 
                 }
+                //cout<<i<<" "<<pointer<<endl;
 
             }
             cout << ptrNode->getKey(0) << " pointer " << pointer << endl;
@@ -343,7 +345,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end)
     if (searchNode == nullptr)
         return {};
     vector<tuple<uint, void *, uint_s> *> rangeOfRecords;
-    int startKeyPos;
+    int startKeyPos=0;
     for (int i = 0; i < searchNode->getCurSize(); i++) //find position of first key >= start in node
     {
         if (start <= searchNode->getKey(i)) {
@@ -355,21 +357,21 @@ vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end)
     int cursorKey = startKeyPos;
     while (searchNode->getKey(cursorKey) <= end) //find all keys in range
     {
-
-
+        cout << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
         if (searchNode->getKey(cursorKey) >= start) {
             vector<tuple<uint, void *, uint_s> *> *keyPtr = (vector<tuple<uint, void *, uint_s> *> *) searchNode->getChildNode(
                     cursorKey);
             rangeOfRecords.insert(rangeOfRecords.end(), keyPtr->begin(), keyPtr->end());
-            //out << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
+            //cout << "search " << searchNode->getKey(cursorKey) << " pointer " << cursorKey << endl;
         }
         //rangeOfRecords.push_back(*keyPtr);
 
 
         if (cursorKey == searchNode->getCurSize() - 1) //if reach last key in node, jump to next node
         {
-            printNode(searchNode,"Contents of Node searched");
+
             searchNode = searchNode->getChildNode(nodeSize);
+            printNode(searchNode,"Contents of Node searched");
             cout << "Jump to Next Node " << (void *) searchNode << endl;
             nodeAccessed++;
 
