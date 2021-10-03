@@ -155,8 +155,8 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                 ptrNode->setChildNode(nodeSize, newLeaf); //set last node ptr to point to next leaf node
                 newLeaf->setChildNode(nodeSize, tempNode->getChildNode(nodeSize + 1));
 
-                printNode(ptrNode, "orig leaf node");
-                printNode(newLeaf, "new leaf node");
+                if(DEBUG_MODE)printNode(ptrNode, "orig leaf node");
+                if(DEBUG_MODE)printNode(newLeaf, "new leaf node");
 
                 if (ptrNode == rootNode) {
                     Node *newRoot = new Node(nodeSize);
@@ -171,14 +171,13 @@ void BPTree::insertKey(int newKey, tuple<uint, void *, uint_s> *keyPtr) {
                 }
             }
         } else {//key is duplicate
-            //TODO duplicate function
-            cout << "Key duplicate. Inserting to same key" << endl;
+            if (DEBUG_MODE)cout << "Key duplicate. Inserting to same key" << endl;
             for (int i = 0; i < ptrNode->getCurSize(); i++) {
                 if (ptrNode->getKey(i) == newKey) {
                     vector<tuple<uint, void *, uint_s> *> *vecKeys =
                             (vector<tuple<uint, void *, uint_s> *> *) ptrNode->getChildNode(i);
                     vecKeys->push_back(keyPtr);
-                    cout << "Current vector size: " << vecKeys->size() << endl;
+                    if (DEBUG_MODE)cout << "Current vector size: " << vecKeys->size() << endl;
                 }
             }
         }
@@ -315,11 +314,11 @@ Node *BPTree::searchForNode(int key) {
         int pointer = 0;
         while (!ptrNode->isLeaf()) //find the leaf node with delete key
         {
-            cout << "debug node " << ptrNode->getKey(0) << endl;
+            if(DEBUG_MODE)cout << "debug node " << ptrNode->getKey(0) << endl;
             pointer = 0;
 
             for (int i = 0; i < ptrNode->getCurSize(); i++) {
-                cout << "key: " << key << " nodeKey: " << ptrNode->getKey(i) << endl;
+                if(DEBUG_MODE)cout << "key: " << key << " nodeKey: " << ptrNode->getKey(i) << endl;
                 if (key >= ptrNode->getKey(i)) {
                     //cout<<"in if"<<endl;
                     pointer = i+1;
@@ -328,7 +327,7 @@ Node *BPTree::searchForNode(int key) {
                 //cout<<i<<" "<<pointer<<endl;
 
             }
-            cout << ptrNode->getKey(0) << " pointer " << pointer << endl;
+            if(DEBUG_MODE)cout << ptrNode->getKey(0) << " pointer " << pointer << endl;
             ptrNode = ptrNode->getChildNode(pointer);
         }
 
@@ -340,7 +339,7 @@ Node *BPTree::searchForNode(int key) {
 vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end) {
     Node *searchNode;
     searchNode = searchForNode(start);
-    cout << searchNode->getKey(0) << endl;
+    if(DEBUG_MODE)cout << searchNode->getKey(0) << endl;
     int nodeAccessed = 1;
     if (searchNode == nullptr)
         return {};
@@ -371,8 +370,10 @@ vector<tuple<uint, void *, uint_s> *> BPTree::searchForRange(int start, int end)
         {
 
             searchNode = searchNode->getChildNode(nodeSize);
+
             printNode(searchNode,"Contents of Node searched");
-            cout << "Jump to Next Node " << (void *) searchNode << endl;
+            if(DEBUG_MODE)cout << "Jump to Next Node " << (void *) searchNode << endl;
+
             nodeAccessed++;
 
             cursorKey = 0;
@@ -419,7 +420,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
         while (!ptrNode->isLeaf()) //find the leaf node with delete key
         {
             pointer = 0;
-            cout << ptrNode->getKey(0) << " leaf? = " << ptrNode->isLeaf() << endl;
+            if(DEBUG_MODE)cout << ptrNode->getKey(0) << " leaf? = " << ptrNode->isLeaf() << endl;
             for (int i = 0; i < ptrNode->getCurSize(); i++) {
                 if (deleteKey < ptrNode->getKey(i)) {
                     pointer = i;
@@ -443,6 +444,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
         {
             if (deleteKey == ptrNode->getKey(i)) {
                 keyPointer = i;
+
                 keyExist = true;
                 break;
             }
@@ -843,7 +845,7 @@ void BPTree::printNode(Node *node, string label) {
             if (printAddress)cout << node->getChildNode(i) << " ";
             cout << node->getKey(i) << " ";
         }
-        if (node->isLeaf())cout << node->getChildNode(node->getMaxSize());
+        if (node->isLeaf())if (printAddress)cout << node->getChildNode(node->getMaxSize());
         else if (printAddress)cout << node->getChildNode(i);
         cout << "] " << endl;
     } else {
