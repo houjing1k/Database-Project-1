@@ -466,6 +466,7 @@ vector<tuple<uint, void *, uint_s> *> BPTree::deleteKey(int deleteKey) {
                 for (int i = keyPointer; i < nodeSize; i++) //squeeze keys in node
                 {
                     ptrNode->setKey(i, ptrNode->getKey(i + 1));
+                    ptrNode->setChildNode(i, ptrNode->getChildNode(i + 1));
                 }
                 //cout<<"debug1: "<<pointer<<" "<<keyPointer<<endl;
                 if (keyPointer == 0) {
