@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short int uint_s;
 
-const bool DEBUG_MODE = true;
+const bool DEBUG_MODE = false;
 
 BPTree::BPTree(size_t blockSize) {
     this->nodeSize = (blockSize - 13) / 12;
